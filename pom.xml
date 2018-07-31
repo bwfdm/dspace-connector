@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>bwfdm</groupId>
+	<artifactId>dspace-connector</artifactId>
+	<version>1.0.0</version>
+	
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>1.7</maven.compiler.source>
+		<maven.compiler.target>1.7</maven.compiler.target>
+	</properties>
+
+	<repositories>
+        <!-- JitPack package repository to use libraries
+             not only from maven repository, but also from GitHub.
+             More info: https://jitpack.io/docs/#jitpackio -->
+        <repository>
+            <id>jitpack-repo</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
+
+	<dependencies>
+	    <!-- TODO: For HTTP communication? -->
+	    <!-- TODO: update version? -->
+	    <dependency>
+			<groupId>javax.ws.rs</groupId>
+			<artifactId>javax.ws.rs-api</artifactId>
+			<version>2.1</version>
+		</dependency>
+	    <!-- SWORDv2 Java Client from GitHub
+		     Connection works via JitPack (see "repositories" part above)
+		     Link: https://github.com/swordapp/JavaClient2.0 -->
+	    <dependency>
+			<groupId>com.github.swordapp</groupId>
+            <artifactId>JavaClient2.0</artifactId>
+            <version>sword2-client-0.9.3</version>
+			<exclusions>
+				<exclusion>
+					<!-- Excluded for interfering with default XMLOutputFactory -->
+					<groupId>org.codehaus.woodstox</groupId>
+					<artifactId>wstx-asl</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<!-- Jackson to convert JSON-String to any data transfer object (DTO) -->
+		<!-- TODO: update version? -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.8.8</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.21</version>
+		</dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.7.5</version>
+        </dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.5.2</version>
+		</dependency>
+	</dependencies>
+</project>
