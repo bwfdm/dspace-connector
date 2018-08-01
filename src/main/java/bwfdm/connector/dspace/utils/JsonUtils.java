@@ -18,81 +18,86 @@
  */
 package bwfdm.connector.dspace.utils;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  *
  * @author Volodymyr Kushnarenko
  */
 public class JsonUtils {
-	
-	protected static final Logger log = LoggerFactory.getLogger(JsonUtils.class);
-      
-    /**
-     * Make pretty print of JSON.
-     * 
-     * @param jsonString
-     * @return String or ""
-     */
-    public static String jsonStringPrettyPrint(String jsonString){
-        
-        if (jsonString.equals("")){
-            return "bwfdm.connector.dspace.utils.JsonUtils.jsonStringPrettyPrint: empty string.";
-        }
-        ObjectMapper mapper = new ObjectMapper();
-        String prettyJsonString = "";
-        try {
-            Object jsonObject = mapper.readValue(jsonString, Object.class);      
-            prettyJsonString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonObject);
-        } catch (IOException ex) {
-        	log.error("Exception in JSON Pretty Print: {}: {}", ex.getClass().getSimpleName(), ex.getMessage());
-        }
-        return prettyJsonString;
-    }
-    
-    /**
-     * Convert JSON-String to the object (DTO)
-     * 
-     * @param <T> - any class
-     * @param jsonString - input string
-     * @param type - type of the class
-     * @return any object, DTO
-     */
-    public static <T> T jsonStringToObject(String jsonString, Class<T> type){    	
-    	
-    	ObjectMapper mapper = new ObjectMapper();
-        T obj = null;
-        try{
-            obj = type.cast(mapper.readValue(jsonString, type));
-        }catch (IOException ex) {
-        	log.error("Exception in JSON-to-Object conversion: {}: {}", ex.getClass().getSimpleName(), ex.getMessage());
-        }
-        return obj;
-    }
-    
-    /**
-     * Convert some object to JSON-String
-     * 
-     * @param <T> - any type of object
-     * @param obj - any object
-     * @return String or ""
-     */
-    public static <T> String objectToJsonString(T obj){
-        
-    	ObjectMapper mapper = new ObjectMapper();
-        String jsonString = null;
-        try {
-            jsonString  = mapper.writeValueAsString(obj);
-        } catch (JsonProcessingException ex) {
-        	log.error("Exception in Object-to-JSON conversion: {}: {}", ex.getClass().getSimpleName(),  ex.getMessage());
-        }
-        return jsonString;
-    }
-    
-}
 
+	protected static final Logger log = LoggerFactory.getLogger(JsonUtils.class);
+
+	/**
+	 * Make pretty print of JSON.
+	 * 
+	 * @param jsonString
+	 * @return String with formatted representation of JSON or empty String ("")
+	 */
+	public static String jsonStringPrettyPrint(String jsonString) {
+
+		if (jsonString.equals("")) {
+			return "";
+		}
+		ObjectMapper mapper = new ObjectMapper();
+		String prettyJsonString = "";
+		try {
+			Object jsonObject = mapper.readValue(jsonString, Object.class);
+			prettyJsonString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonObject);
+		} catch (IOException ex) {
+			log.error("Exception in JSON Pretty Print: {}: {}", ex.getClass().getSimpleName(), ex.getMessage());
+		}
+		return prettyJsonString;
+	}
+
+	/**
+	 * Convert JSON-String to the object (DTO)
+	 * 
+	 * @param <T>
+	 *            - any class
+	 * @param jsonString
+	 *            - input string
+	 * @param type
+	 *            - type of the class
+	 * @return any object (DTO) or null
+	 */
+	public static <T> T jsonStringToObject(String jsonString, Class<T> type) {
+
+		ObjectMapper mapper = new ObjectMapper();
+		T obj = null;
+		try {
+			obj = type.cast(mapper.readValue(jsonString, type));
+		} catch (IOException ex) {
+			log.error("Exception in JSON-to-Object conversion: {}: {}", ex.getClass().getSimpleName(), ex.getMessage());
+		}
+		return obj;
+	}
+
+	/**
+	 * Convert some object to JSON-String
+	 * 
+	 * @param <T>
+	 *            - any type of object
+	 * @param obj
+	 *            - any object
+	 * @return String or null
+	 */
+	public static <T> String objectToJsonString(T obj) {
+
+		ObjectMapper mapper = new ObjectMapper();
+		String jsonString = null;
+		try {
+			jsonString = mapper.writeValueAsString(obj);
+		} catch (JsonProcessingException ex) {
+			log.error("Exception in Object-to-JSON conversion: {}: {}", ex.getClass().getSimpleName(), ex.getMessage());
+		}
+		return jsonString;
+	}
+
+}

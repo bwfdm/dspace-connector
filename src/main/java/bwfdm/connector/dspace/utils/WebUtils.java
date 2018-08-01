@@ -39,7 +39,6 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.util.EntityUtils;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,38 +49,37 @@ import org.slf4j.LoggerFactory;
 public class WebUtils {
 
 	protected static final Logger log = LoggerFactory.getLogger(WebUtils.class);
-		
-	/** 
+
+	/**
 	 * Create a ClosableHttpClient ignoring SSL certificates
 	 * 
 	 * @return {@link CloseableHttpClient}
 	 */
 	public static CloseableHttpClient createHttpClientWithSSLSupport() {
-		
+
 		try {
 			KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
-			
+
 			SSLContextBuilder builder = new SSLContextBuilder();
 			builder.loadTrustMaterial(trustStore, new TrustSelfSignedStrategy() {
 				@Override
-			    public boolean isTrusted(X509Certificate[] chain, String authType)
-			            throws CertificateException {
-			        return true;
-			    }
+				public boolean isTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+					return true;
+				}
 			});
-			SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(builder.build());	
-			return HttpClients.custom().setSSLSocketFactory(
-		            sslsf).setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE).build();
-			
-			//return HttpClients.custom().setSSLSocketFactory(sslsf).build();
-			
+			SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(builder.build());
+			return HttpClients.custom().setSSLSocketFactory(sslsf).setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE)
+					.build();
+
+			// return HttpClients.custom().setSSLSocketFactory(sslsf).build();
+
 		} catch (NoSuchAlgorithmException | KeyStoreException | KeyManagementException ex) {
-			log.error("Exception by creation of http-clinet with ssl support: {}: {}", ex.getClass().getSimpleName(), ex.getMessage());
+			log.error("Exception by creation of http-clinet with ssl support: {}: {}", ex.getClass().getSimpleName(),
+					ex.getMessage());
 			return null;
-		}		
+		}
 	}
-		
-	
+
 	/**
 	 * Get a response to the REST-request
 	 * 
@@ -91,7 +89,8 @@ public class WebUtils {
 	 * @param acceptType
 	 * @return
 	 */
-	public static CloseableHttpResponse getResponse(CloseableHttpClient client, String url, RequestType requestType, String contentType, String acceptType) {
+	public static CloseableHttpResponse getResponse(CloseableHttpClient client, String url, RequestType requestType,
+			String contentType, String acceptType) {
 		try {
 			HttpUriRequest request;
 			switch (requestType) {
@@ -108,19 +107,18 @@ public class WebUtils {
 				log.error("Not supported request type: {}", requestType.toString());
 				return null;
 			}
-			
+
 			request.addHeader("Content-Type", contentType);
 			request.addHeader("Accept", acceptType);
 			CloseableHttpResponse response = client.execute(request);
 			return response;
-			
+
 		} catch (IOException ex) {
 			log.error("Exception by http request: {}: {}", ex.getClass().getSimpleName(), ex.getMessage());
 			return null;
 		}
 	}
-	
-	
+
 	/**
 	 * Get a response entity as a String
 	 * 
@@ -129,15 +127,14 @@ public class WebUtils {
 	 */
 	public static String getResponseEntityAsString(CloseableHttpResponse response) {
 		try {
-			return EntityUtils.toString(response.getEntity(),"UTF-8");
+			return EntityUtils.toString(response.getEntity(), "UTF-8");
 		} catch (ParseException | IOException ex) {
-			log.error("Exception by converting response entity to String: {}: {}", 
-						ex.getClass().getSimpleName(), ex.getMessage());
-			return null;			
-		} 
+			log.error("Exception by converting response entity to String: {}: {}", ex.getClass().getSimpleName(),
+					ex.getMessage());
+			return null;
+		}
 	}
-	
-	
+
 	/**
 	 * Close the response
 	 * 
@@ -150,33 +147,29 @@ public class WebUtils {
 			log.error("Exception by response closing: {}: {}", ex.getClass().getSimpleName(), ex.getMessage());
 		}
 	}
-	
-	
+
 	/**
 	 * Possible types of request
 	 * 
 	 * @author Volodymyr Kushnarenko
 	 */
-	public static enum RequestType {	
-		GET("GET"),
-		PUT("PUT"),
-		POST("POST")
-		;
-		
+	public static enum RequestType {
+		GET("GET"), PUT("PUT"), POST("POST");
+
 		private final String label;
-		
+
 		private RequestType(String label) {
 			this.label = label;
 		}
-		
+
 		public String getLabel() {
 			return label;
 		}
-		
+
 		@Override
 		public String toString() {
 			return label;
 		}
 	}
-	
+
 }
