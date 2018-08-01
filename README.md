@@ -11,26 +11,26 @@ Library to publish files (as zip-archives) and/or metadata to DSpace-based publi
     - via [JitPack] (https://jitpack.io/docs/#jitpackio)
     - add JitPack repository to pom.xml
     
-    ```
-    <repositories>
-        <!-- JitPack package repository to use libraries
-             not only from maven repository, but also from GitHub.
-             More info: https://jitpack.io/docs/#jitpackio -->
-        <repository>
-            <id>jitpack-repo</id>
-            <url>https://jitpack.io</url>
-        </repository>
-    </repositories>
-    ```
+```
+<repositories>
+	<!-- JitPack package repository to use libraries
+		not only from maven repository, but also from GitHub.
+		More info: https://jitpack.io/docs/#jitpackio -->
+	<repository>
+		<id>jitpack-repo</id>
+		<url>https://jitpack.io</url>
+	</repository>
+</repositories>
+```
     - add new dependency to pom.xml
     
-    ```
-    <dependency>
-			<groupId>com.github.sara-service</groupId>
-            <artifactId>dspace-connector</artifactId>
-            <version>master-SNAPSHOT</version>
-	</dependency>
-    ```
+```
+<dependency>
+	<groupId>com.github.sara-service</groupId>
+	<artifactId>dspace-connector</artifactId>
+	<version>master-SNAPSHOT</version>
+</dependency>
+```
     
 ## How to use
 - TODO: add text
