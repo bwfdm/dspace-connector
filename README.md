@@ -7,7 +7,7 @@ Library to publish files and/or metadata to DSpace-based publication repositorie
 1. As dependency from maven repository 
     - TODO: will be added soon ...
     
-2. As dependency from GitHub (more details see here: [JitPack] (https://jitpack.io/docs/#jitpackio))
+2. As dependency from GitHub (more details see here: <a href="https://jitpack.io/docs/#jitpackio" target="_blank">JitPack</a>)
     
     - add JitPack repository to pom.xml
     
@@ -34,29 +34,29 @@ Library to publish files and/or metadata to DSpace-based publication repositorie
 	```
     
 ## How to use
-- As an example see [DSpaceTest_v6.java] (src/test/java/bwfdm/connector/dspace/test/DSpaceTest_v6.java)
+- As an example see [DSpaceTest_v6.java](src/test/java/bwfdm/connector/dspace/test/DSpaceTest_v6.java)
 - ..
 - TODO: add text
 
 ## Features
-- the complete functionality of the connector is described in the [PublicationRepository] (src/main/java/bwfdm/connector/dspace/PublicationRepository.java) interface
+- the complete functionality of the connector is described in the [PublicationRepository](src/main/java/bwfdm/connector/dspace/PublicationRepository.java) interface
 - connection to DSpace is realized via REST-API and SWORD-v2 protocol.
 - REST-API is used to get the most essential information about collections and communities
 - SWORD-v2 protocol is used to transfer files to the publication repository (make injest) and to get information from the service document as well, what collections are available for the user 
-- as a core component is used the [SWORD JavaClient2.0] (https://github.com/swordapp/JavaClient2.0)
+- as a core component is used the <a href="https://github.com/swordapp/JavaClient2.0" target="_blank">SWORD JavaClient2.0</a>
 
 ## Tests
 - TODO: add text
 
 ## Limitations
-- for the current moment only DSpace version 6.x is supported, see [DSpace_v6.java] (src/main/java/bwfdm/connector/dspace/DSpace_v6.java)
-- [PublicationRepository] (src/main/java/bwfdm/connector/dspace/PublicationRepository.java) interface provides only basic functionality for the publication. Further extensions should be added soon. You are welcome to make a contribution ;)
-- it is important, that "REST" and "SWORD-v2" have to be activated by the publication repository. For more details please see the [DSpace installation manual] (https://wiki.duraspace.org/display/DSDOC6x/Installing+DSpace#InstallingDSpace-InstallationInstructions)
+- for the current moment only DSpace version 6.x is supported, see [DSpace_v6.java](src/main/java/bwfdm/connector/dspace/DSpace_v6.java)
+- [PublicationRepository](src/main/java/bwfdm/connector/dspace/PublicationRepository.java) interface provides only basic functionality for the publication. Further extensions should be added soon. You are welcome to make a contribution ;)
+- it is important, that "REST" and "SWORD-v2" have to be activated by the publication repository. For more details please see the <a href="https://wiki.duraspace.org/display/DSDOC6x/Installing+DSpace#InstallingDSpace-InstallationInstructions" target="_blank">DSpace installation manual</a>
 
  
 ## Used third party libraries and their licenses
-- see [license-third-party.txt] (license-third-party.txt)
+- see [license-third-party.txt](license-third-party.txt)
      
 
 ## Own license
-- MIT, see [license.txt] (license.txt)
+- MIT, see [license.txt](license.txt)
