@@ -23,7 +23,8 @@ import java.io.File;
 /**
  * General Interface for the publication repository.
  * 
- * @author Stefan Kombrink, Volodymyr Kushnarenko
+ * @author Stefan Kombrink
+ * @author Volodymyr Kushnarenko
  */
 
 import java.util.Map;
@@ -36,21 +37,22 @@ public interface PublicationRepository {
 	 * @return
 	 */
 	public boolean isAccessible();
-	
+
 	/**
-	 * Set login and password of the user.
-	 * Password is needed for the communication with the publication repository via API (e.g. SWORD or REST)
+	 * Set login and password of the user. Password is needed for the communication
+	 * with the publication repository via API (e.g. SWORD or REST)
 	 * <p>
-	 * If the publication repository is DSpace you should put login/password ONLY of the admin-user.
-	 * Credentials of the admin-user will be used for the REST/SWORD mechanism. 
-	 * This mechanism is needed because of limitations of DSpace-API, where password is always needed.   
+	 * If the publication repository is DSpace you should put login/password ONLY of
+	 * the admin-user. Credentials of the admin-user will be used for the REST/SWORD
+	 * mechanism. This mechanism is needed because of limitations of DSpace-API,
+	 * where password is always needed.
 	 * <p>
-	 *   
+	 * 
 	 * @param user
 	 * @param password
 	 */
 	public void setCredentials(String user, char[] password);
-	
+
 	/**
 	 * Check if user is registered in the publication repository
 	 * 
@@ -58,55 +60,60 @@ public interface PublicationRepository {
 	 * @return
 	 */
 	public boolean isUserRegistered(String loginName);
-	
+
 	/**
 	 * Check if user is assigned to publish something in the repository
 	 *
 	 * @param loginName
-	 * @return {@code true} if count of user available collections is great than zero, 
-	 * 		   otherwise {@code false} 
- 	 */
+	 * @return {@code true} if count of user available collections is great than
+	 *         zero, otherwise {@code false}
+	 */
 	public boolean isUserAssigned(String loginName);
-		
+
 	/**
-	 * Get collections, which are available for the user
-	 * Could be, that user has an access only for some specific collections.
-	 *  
+	 * Get collections, which are available for the user Could be, that user has an
+	 * access only for some specific collections.
+	 * 
 	 * @param loginName
-	 * @return Map of Strings, where key="Collection full URL", value="Collection title", or empty Map if there are not available collections.
+	 * @return Map of Strings, where key="Collection full URL", value="Collection
+	 *         title", or empty Map if there are not available collections.
 	 */
 	public Map<String, String> getUserAvailableCollectionsWithTitle(String loginName);
-	
+
 	/**
 	 * Get collections, which are available for the user, and show their full name
 	 * (e.g. for DSpace-repository it means "community/subcommunity/collection")
 	 * <p>
 	 * Could be, that user has an access only for some specific collections.
-	 *  
-	 * @param loginName, nameSeparator
-	 * @return Map of Strings, where key="Collection full URL", value="Collection full name", or empty Map if there are not available collections.
+	 * 
+	 * @param loginName,
+	 *            nameSeparator
+	 * @return Map of Strings, where key="Collection full URL", value="Collection
+	 *         full name", or empty Map if there are not available collections.
 	 */
 	public Map<String, String> getUserAvailableCollectionsWithFullName(String loginName, String fullNameSeparator);
-	
+
 	/**
-	 * Get available for the admin-user collections for publication.
-	 * As credentials for the request are used login/password of the admin-user
+	 * Get available for the admin-user collections for publication. As credentials
+	 * for the request are used login/password of the admin-user
 	 * 
-	 * @return Map of Strings, where key="Collection full URL", value="Collection title", or empty Map if there are not available collections.
+	 * @return Map of Strings, where key="Collection full URL", value="Collection
+	 *         title", or empty Map if there are not available collections.
 	 */
 	public Map<String, String> getAdminAvailableCollectionsWithTitle();
-	
+
 	/**
-	 * Get available for the admin-user collections with full name
-	 * (e.g. for DSpace-repository it means "community/subcommunity/collection")
+	 * Get available for the admin-user collections with full name (e.g. for
+	 * DSpace-repository it means "community/subcommunity/collection")
 	 * <p>
 	 * As credentials for the request are used login/password of the admin-user
-	 *  
-	 * @param fullNameSeparator 
-	 * @return Map of Strings, where key="Collection full URL", value="Collection full name", or empty Map if there are not available collections. 
+	 * 
+	 * @param fullNameSeparator
+	 * @return Map of Strings, where key="Collection full URL", value="Collection
+	 *         full name", or empty Map if there are not available collections.
 	 */
 	public Map<String, String> getAdminAvailableCollectionsWithFullName(String fullNameSeparator);
-	
+
 	/**
 	 * Publish a file to some collections, which is available for the user.
 	 * 
@@ -116,21 +123,21 @@ public interface PublicationRepository {
 	 * @return
 	 */
 	public boolean publishFile(String userLogin, String collectionURL, File fileFullPath);
-	
+
 	/**
-	 * Publish metadata only (without any file) to some collection, which is available for the user.
-	 * Metadata are described as a {@link java.util.Map}. 
-	 *  
+	 * Publish metadata only (without any file) to some collection, which is
+	 * available for the user. Metadata are described as a {@link java.util.Map}.
+	 * 
 	 * @param userLogin
 	 * @param collectionURL
 	 * @param metadataMap
 	 * @return
 	 */
 	public boolean publishMetadata(String userLogin, String collectionURL, Map<String, String> metadataMap);
-		
+
 	/**
-	 * Publish metadata only (without any file) to some collection, which is available for the user.
-	 * Metadata are described in the xml-file.
+	 * Publish metadata only (without any file) to some collection, which is
+	 * available for the user. Metadata are described in the xml-file.
 	 * 
 	 * @param userLogin
 	 * @param collectionURL
@@ -138,10 +145,10 @@ public interface PublicationRepository {
 	 * @return
 	 */
 	public boolean publishMetadata(String userLogin, String collectionURL, File metadataFileXML);
-	
+
 	/**
-	 * Publish a file together with the metadata.
-	 * Metadata are described as a {@link java.util.Map}. 
+	 * Publish a file together with the metadata. Metadata are described as a
+	 * {@link java.util.Map}.
 	 * 
 	 * @param userLogin
 	 * @param collectionURL
@@ -149,11 +156,12 @@ public interface PublicationRepository {
 	 * @param metadataMap
 	 * @return
 	 */
-	public boolean publishFileAndMetadata(String userLogin, String collectionURL, File fileFullPath, Map<String, String> metadataMap);
-	
+	public boolean publishFileAndMetadata(String userLogin, String collectionURL, File fileFullPath,
+			Map<String, String> metadataMap);
+
 	/**
-	 * Publish a file together with the metadata.
-	 * Metadata are described in the xml-file.
+	 * Publish a file together with the metadata. Metadata are described in the
+	 * xml-file.
 	 * 
 	 * @param userLogin
 	 * @param collectionURL
@@ -161,6 +169,7 @@ public interface PublicationRepository {
 	 * @param metadataFileXML
 	 * @return
 	 */
-	public boolean publishFileAndMetadata(String userLogin, String collectionURL, File fileFullPath, File metadataFileXML);
-	
+	public boolean publishFileAndMetadata(String userLogin, String collectionURL, File fileFullPath,
+			File metadataFileXML);
+
 }
