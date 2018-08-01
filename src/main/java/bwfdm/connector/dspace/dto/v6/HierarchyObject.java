@@ -34,8 +34,7 @@ public class HierarchyObject {
 	
 	
 	public List<String> getCommunityListForCollection(HierarchyObject obj, String collectionHandle, List<String> communityList) {
-		
-		
+				
 		for(HierarchyCollectionObject coll: obj.collection) {
 			if(coll.handle.equals(collectionHandle)) {
 				communityList.add(0, obj.name);
