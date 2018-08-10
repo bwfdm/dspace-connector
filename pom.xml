@@ -26,6 +26,7 @@
 	<groupId>bwfdm</groupId>
 	<artifactId>dspace-connector</artifactId>
 	<version>0.1.0</version>
+	<packaging>jar</packaging>
 
 	<name>DSpace Connector</name>
 	<description>
@@ -33,11 +34,115 @@
     </description>
 	<url>https://github.com/sara-service/dspace-connector/</url>
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.source>1.7</maven.compiler.source>
-		<maven.compiler.target>1.7</maven.compiler.target>
-	</properties>
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>http://www.opensource.org/licenses/mit-license.php</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <connection>scm:git:https://github.com/sara-service/dspace-connector.git</connection>
+        <developerConnection>scm:git:git@github.com:sara-service/dspace-connector.git</developerConnection>
+        <url>https://github.com/sara-service/dspace-connector/</url>
+    </scm>
+
+    <developers>
+        <developer>
+            <name>Volodymyr Kushnarenko</name>
+            <url>https://github.com/vkush</url>
+            <organization>Ulm University, Institute of Information Resource Management</organization>
+            <organizationUrl>https://www.uni-ulm.de/in/omi/</organizationUrl>
+        </developer>
+    </developers>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <java.version>1.7</java.version>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+    </properties>
+    
+    <!-- TODO: add distribution management 
+       see: https://github.com/swordapp/JavaClient2.0/commit/88af86cb87b690133ac994ecc0d3fc5ed510dec9 
+    -->
+
+    <build>
+        <plugins>
+            <plugin>
+                <!-- TODO: add other parameters 
+                    see: https://github.com/swordapp/JavaClient2.0/commits/master 
+                -->
+                <artifactId>maven-release-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.0</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addDefaultImplementationEntries>
+                                true
+                            </addDefaultImplementationEntries>
+                            <addDefaultSpecificationEntries>
+                                true
+                            </addDefaultSpecificationEntries>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>default</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>default</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.5</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>    
 
 	<dependencies>
 		<!-- TODO: For HTTP communication? -->
