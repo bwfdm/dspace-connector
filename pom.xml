@@ -19,16 +19,6 @@
 		<maven.compiler.target>1.7</maven.compiler.target>
 	</properties>
 
-	<repositories>
-        <!-- JitPack package repository to use libraries
-             not only from maven repository, but also from GitHub.
-             More info: https://jitpack.io/docs/#jitpackio -->
-        <repository>
-            <id>jitpack-repo</id>
-            <url>https://jitpack.io</url>
-        </repository>
-    </repositories>
-
 	<dependencies>
 	    <!-- TODO: For HTTP communication? -->
 	    <!-- TODO: update version? -->
@@ -37,13 +27,11 @@
 			<artifactId>javax.ws.rs-api</artifactId>
 			<version>2.1</version>
 		</dependency>
-	    <!-- SWORDv2 Java Client from GitHub
-		     Connection works via JitPack (see "repositories" part above)
-		     Link: https://github.com/swordapp/JavaClient2.0 -->
+	    <!-- SWORDv2 Java Client -->
 	    <dependency>
-			<groupId>com.github.swordapp</groupId>
-            <artifactId>JavaClient2.0</artifactId>
-            <version>sword2-client-0.9.3</version>
+			<groupId>org.swordapp</groupId>
+            <artifactId>sword2-client</artifactId>
+            <version>0.9.3</version>
 			<exclusions>
 				<exclusion>
 					<!-- Excluded for interfering with default XMLOutputFactory -->
