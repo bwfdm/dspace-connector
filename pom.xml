@@ -23,7 +23,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>bwfdm</groupId>
+	<groupId>com.github.bwfdm</groupId>
 	<artifactId>dspace-connector</artifactId>
 	<version>0.1.0</version>
 	<packaging>jar</packaging>
@@ -32,7 +32,7 @@
 	<description>
         Library to publish files and/or metadata to DSpace-based publication repositories.
     </description>
-	<url>https://github.com/sara-service/dspace-connector/</url>
+	<url>https://github.com/bwfdm/dspace-connector/</url>
 
     <licenses>
         <license>
@@ -43,9 +43,9 @@
     </licenses>
 
     <scm>
-        <connection>scm:git:https://github.com/sara-service/dspace-connector.git</connection>
-        <developerConnection>scm:git:git@github.com:sara-service/dspace-connector.git</developerConnection>
-        <url>https://github.com/sara-service/dspace-connector/</url>
+        <connection>scm:git:https://github.com/bwfdm/dspace-connector.git</connection>
+        <developerConnection>scm:git:git@github.com:bwfdm/dspace-connector.git</developerConnection>
+        <url>https://github.com/bwfdm/dspace-connector/</url>
     </scm>
 
     <developers>

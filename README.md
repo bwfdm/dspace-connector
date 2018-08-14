@@ -32,7 +32,7 @@ Library to publish files and/or metadata to DSpace-based publication repositorie
     
 	```
 	<dependency>
-		<groupId>com.github.sara-service</groupId>
+		<groupId>com.github.bwfdm</groupId>
 		<artifactId>dspace-connector</artifactId>
 		<version>master-SNAPSHOT</version>
 	</dependency>
