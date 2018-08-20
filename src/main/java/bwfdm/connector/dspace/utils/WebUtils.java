@@ -53,7 +53,7 @@ public class WebUtils {
 	/**
 	 * Create a ClosableHttpClient ignoring SSL certificates
 	 * 
-	 * @return {@link CloseableHttpClient}
+	 * @return {@link CloseableHttpClient} or {@code null} in case of error
 	 */
 	public static CloseableHttpClient createHttpClientWithSSLSupport() {
 
@@ -83,11 +83,13 @@ public class WebUtils {
 	/**
 	 * Get a response to the REST-request
 	 * 
-	 * @param client
-	 * @param url
-	 * @param contentType
-	 * @param acceptType
-	 * @return
+	 * @param client - object of {@link CloseableHttpClient}
+	 * @param url - URL as {@link String}
+	 * @param requestType - object of {@link RequestType}
+	 * @param contentType - content type as {@link String}  
+	 * @param acceptType - accept type as {@link String}
+	 *  
+	 * @return {@link CloseableHttpResponse} or {@code null} in case of error
 	 */
 	public static CloseableHttpResponse getResponse(CloseableHttpClient client, String url, RequestType requestType,
 			String contentType, String acceptType) {
@@ -122,8 +124,9 @@ public class WebUtils {
 	/**
 	 * Get a response entity as a String
 	 * 
-	 * @param response
-	 * @return
+	 * @param response - object of {@link CloseableHttpResponse}
+	 * 
+	 * @return {@link String} with response or {@code null} in case of error
 	 */
 	public static String getResponseEntityAsString(CloseableHttpResponse response) {
 		try {
@@ -138,7 +141,7 @@ public class WebUtils {
 	/**
 	 * Close the response
 	 * 
-	 * @param response
+	 * @param response - object of {@link CloseableHttpResponse}
 	 */
 	public static void closeResponse(CloseableHttpResponse response) {
 		try {

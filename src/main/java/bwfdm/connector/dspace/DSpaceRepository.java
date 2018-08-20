@@ -66,10 +66,11 @@ public abstract class DSpaceRepository implements PublicationRepository {
 	 * If "adminUser" and "userLogin" are different, "on-behalf-of" option will be
 	 * used.
 	 * 
-	 * @param adminUser
-	 * @param adminPassword
-	 * @param userLogin
-	 * @return
+	 * @param adminUser - administrator login
+	 * @param adminPassword - administrator password
+	 * @param userLogin - normal user login
+	 * 
+	 * @return {@link AuthCredentials}
 	 */
 	public static AuthCredentials getNewAuthCredentials(String adminUser, char[] adminPassword, String userLogin) {
 
@@ -83,9 +84,9 @@ public abstract class DSpaceRepository implements PublicationRepository {
 	/**
 	 * Get service document via SWORD v2
 	 * 
-	 * @param swordClient
-	 * @param serviceDocumentURL
-	 * @param authCredentials
+	 * @param swordClient - object of {@link SWORDClient}
+	 * @param serviceDocumentURL - URL for service document
+	 * @param authCredentials - object of {@link AuthCredentials}
 	 * @return ServiceDocument or null in case of error/exception
 	 */
 	public static ServiceDocument getServiceDocument(SWORDClient swordClient, String serviceDocumentURL,
@@ -103,7 +104,9 @@ public abstract class DSpaceRepository implements PublicationRepository {
 	/**
 	 * Get available collections via SWORD v2
 	 * 
-	 * @return Map<String, String> where key=URL, value=Title
+	 * @param serviceDocument - object of {@link ServiceDocument}
+	 * 
+	 * @return {@code Map<String, String>} where key=URL, value=Title
 	 */
 	public static Map<String, String> getAvailableCollectionsViaSWORD(ServiceDocument serviceDocument) {
 		Map<String, String> collections = new HashMap<String, String>();
@@ -123,8 +126,9 @@ public abstract class DSpaceRepository implements PublicationRepository {
 	 * Get a file extension (without a dot) from the file name 
 	 * (e.g. "txt", "zip", * ...)
 	 * 
-	 * @param fileName
-	 * @return
+	 * @param fileName - file name
+	 * 
+	 * @return {@link String}
 	 */
 	public static String getFileExtension(String fileName) {
 		String extension = "";
@@ -137,10 +141,11 @@ public abstract class DSpaceRepository implements PublicationRepository {
 
 	/**
 	 * Get package format basing on the file name. 
-	 * E.g. {@link UriRegistry.PACKAGE_SIMPLE_ZIP} or {@link UriRegistry.PACKAGE_BINARY}
+	 * E.g. {@code UriRegistry.PACKAGE_SIMPLE_ZIP} or {@code UriRegistry.PACKAGE_BINARY}
 	 * 
-	 * @param fileName
-	 * @return
+	 * @param fileName - file name
+	 * 
+	 * @return {@link String}
 	 */
 	public static String getPackageFormat(String fileName) {
 		String extension = getFileExtension(fileName);

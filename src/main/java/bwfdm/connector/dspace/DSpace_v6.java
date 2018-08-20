@@ -109,7 +109,7 @@ public class DSpace_v6 extends DSpaceRepository {
 	/**
 	 * Check if REST-interface is accessible.
 	 * 
-	 * @return
+	 * @return {@code true} if REST-API is accessible and {@code false} otherwise
 	 */
 	public boolean isRestAccessible() {
 
@@ -129,7 +129,7 @@ public class DSpace_v6 extends DSpaceRepository {
 	/**
 	 * Check if SWORDv2-protocol is accessible
 	 * 
-	 * @return
+	 * @return boolean
 	 */
 	public boolean isSwordAccessible() {
 
@@ -147,8 +147,10 @@ public class DSpace_v6 extends DSpaceRepository {
 	 * <p>
 	 * REST and SWORD requests are used.
 	 * 
+	 * @param collectionURL - URL of the collection as {@link String}
+	 * 
 	 * @return a {@code List<String>} of communities (0 or more communities are
-	 *         possible) or {@code null} if a collection was not found
+	 *         possible) or {@code null} if the collection was not found
 	 */
 	public List<String> getCommunitiesForCollection(String collectionURL) {
 
@@ -167,6 +169,11 @@ public class DSpace_v6 extends DSpaceRepository {
 	 * Specific only for DSpace-6.
 	 * <p>
 	 * REST and SWORD requests are used. ServiceDocument must be received already.
+	 * 
+	 * @param collectionURL - URL of the collection as {@link String}
+	 * @param serviceDocument - object of {@link ServiceDocument}
+	 * @param hierarchy - object of {@link HierarchyObject}
+	 * @param existedCollectionObjects - array of {@link CollectionObject}
 	 * 
 	 * @return a {@code List<String>} of communities (0 or more communities are
 	 *         possible) or {@code null} if a collection was not found
@@ -210,7 +217,8 @@ public class DSpace_v6 extends DSpaceRepository {
 	 * <p>
 	 * REST and SWORDv2 requests are used.
 	 * 
-	 * @param collectionURL
+	 * @param collectionURL - URL of the collection as {@link String}
+	 * 
 	 * @return String with a handle or {@code null} if collectionURL was not found
 	 */
 	public String getCollectionHandle(String collectionURL) {
@@ -234,8 +242,10 @@ public class DSpace_v6 extends DSpaceRepository {
 	 * REST and SWORDv2 requests are used. ServiceDocument must be already
 	 * retrieved.
 	 * 
-	 * @param collectionURL
-	 * @param serviceDocument
+	 * @param collectionURL - URL of the collection as {@link String}
+	 * @param serviceDocument - object of {@link ServiceDocument}
+	 * @param existedCollections - array of {@link CollectionObject}
+	 * 
 	 * @return String with a handle or {@code null} if collectionURL was not found
 	 */
 	protected String getCollectionHandle(String collectionURL, ServiceDocument serviceDocument,
@@ -263,7 +273,7 @@ public class DSpace_v6 extends DSpaceRepository {
 	/**
 	 * Get all existed collections as an array of CollectionObject. REST is used.
 	 * 
-	 * @return
+	 * @return {@link CollectionObject}[]
 	 */
 	protected CollectionObject[] getAllCollectionObjects() {
 
@@ -281,18 +291,20 @@ public class DSpace_v6 extends DSpaceRepository {
 	 * IMPORTANT - you can use ONLY 1 possibility in the same time (only file, or
 	 * only metadata). "Multipart" is not supported!
 	 * 
-	 * @param userLogin
+	 * @param userLogin - login of the user
 	 * @param collectionURL
 	 *            - could be link to the collection (from the service document) or a
 	 *            link to edit the collection ("Location" field in the response)
+	 * @param swordRequestType - object of {@link SwordRequestType}           
 	 * @param mimeFormat
 	 *            - use e.g. {@code "application/atom+xml"} or
 	 *            {@code "application/zip"}
 	 * @param packageFormat
-	 *            - see {@link UriRegistry.PACKAGE_SIMPLE_ZIP} or
-	 *            {@linkplain UriRegistry.PACKAGE_BINARY}
-	 * @param file
-	 * @param metadataMap
+	 *            - see {@code org.swordapp.client.UriRegistry.PACKAGE_SIMPLE_ZIP} or
+	 *            {@code org.swordapp.client.UriRegistry.PACKAGE_BINARY}
+	 * @param file - path to file
+	 * @param metadataMap - metadata description as Map
+	 * 
 	 * @return "Location" parameter from the response in case of
 	 *         {@code SwordRequestType.DEPOSIT} request, "StatusCode" parameter from
 	 *         the response in case of {@code SwordRequestType.REPLACE} request, or
@@ -407,10 +419,11 @@ public class DSpace_v6 extends DSpaceRepository {
 	 * <p>
 	 * In DSpace SWORD-v2 protocol will be used.
 	 * 
-	 * @param userLogin
-	 * @param collectionURL
-	 * @param fileFullPath
-	 * @return
+	 * @param userLogin - login name of the user
+	 * @param collectionURL - URL of the collection where to publish
+	 * @param fileFullPath - full path to the file for publication
+	 * 
+	 * @return {@code true} if case of success and {@code false} otherwise
 	 */
 	@Override
 	public boolean publishFile(String userLogin, String collectionURL, File fileFullPath) {
@@ -429,10 +442,11 @@ public class DSpace_v6 extends DSpaceRepository {
 	/**
 	 * {@inheritDoc} Publish metadata as a Map.
 	 * 
-	 * @param userLogin
-	 * @param collectionURL
-	 * @param metadataMap
-	 * @return
+	 * @param userLogin - login name of the user
+	 * @param collectionURL - URL of the collection where to publish
+	 * @param metadataMap - metadata as a Map
+	 * 
+	 * @return {@code true} if case of success and {@code false} otherwise
 	 */
 	@Override
 	public boolean publishMetadata(String userLogin, String collectionURL, Map<String, String> metadataMap) {
@@ -443,11 +457,12 @@ public class DSpace_v6 extends DSpaceRepository {
 	 * Private method which can use different request types. See
 	 * {@link SwordRequestType}.
 	 * 
-	 * @param userLogin
-	 * @param collectionURL
-	 * @param metadataMap
-	 * @param swordRequestType
-	 * @return
+	 * @param userLogin - login name of the user
+	 * @param collectionURL - URL of the collection where to publish 
+	 * @param metadataMap - metadata as a Map
+	 * @param swordRequestType - object of {@link SwordRequestType}
+	 * 
+	 * @return {@code true} if case of success and {@code false} otherwise
 	 */
 	protected boolean publishMetadata(String userLogin, String collectionURL, Map<String, String> metadataMap,
 			SwordRequestType swordRequestType) {
@@ -467,12 +482,13 @@ public class DSpace_v6 extends DSpaceRepository {
 	 * <p>
 	 * Publish metadata as a XML-file in ATOM-format.
 	 * 
-	 * @param userLogin
-	 * @param collectionURL
+	 * @param userLogin - login name of the user
+	 * @param collectionURL - URL of the collection where to publish
 	 * @param metadataFileXML
 	 *            - file in XML-format (ATOM format of the metadata description) and
 	 *            with an XML-extension
-	 * @return
+	 *            
+	 * @return {@code true} if case of success and {@code false} otherwise
 	 */
 	@Override
 	public boolean publishMetadata(String userLogin, String collectionURL, File metadataFileXML) {
@@ -483,11 +499,14 @@ public class DSpace_v6 extends DSpaceRepository {
 	 * Private method which can use different request types. See
 	 * {@link SwordRequestType}.
 	 * 
-	 * @param userLogin
-	 * @param collectionURL
-	 * @param metadataFileXML
-	 * @param swordRequestType
-	 * @return
+	 * @param userLogin - login name of the user
+	 * @param collectionURL - URL of the collection where to publish
+	 * @param metadataFileXML 
+	 * 			  - file in XML-format (ATOM format of the metadata description) and
+	 *            with an XML-extension  
+	 * @param swordRequestType - object of {@link SwordRequestType}
+	 * 
+	 * @return {@code true} if case of success and {@code false} otherwise
 	 */
 	protected boolean publishMetadata(String userLogin, String collectionURL, File metadataFileXML, SwordRequestType swordRequestType) {
 

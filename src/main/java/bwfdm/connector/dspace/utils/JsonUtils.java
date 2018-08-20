@@ -37,8 +37,9 @@ public class JsonUtils {
 	/**
 	 * Make pretty print of JSON.
 	 * 
-	 * @param jsonString
-	 * @return String with formatted representation of JSON or empty String ("")
+	 * @param jsonString - JSON as input {@link String}
+	 * 
+	 * @return {@link String} with formatted representation of JSON or empty String ("")
 	 */
 	public static String jsonStringPrettyPrint(String jsonString) {
 
@@ -59,13 +60,11 @@ public class JsonUtils {
 	/**
 	 * Convert JSON-String to the object (DTO)
 	 * 
-	 * @param <T>
-	 *            - any class
-	 * @param jsonString
-	 *            - input string
-	 * @param type
-	 *            - type of the class
-	 * @return any object (DTO) or null
+	 * @param <T> - any class
+	 * @param jsonString - input string
+	 * @param type - type of the class
+	 *            
+	 * @return any object (DTO) or {@code null} in case of error
 	 */
 	public static <T> T jsonStringToObject(String jsonString, Class<T> type) {
 
@@ -82,11 +81,10 @@ public class JsonUtils {
 	/**
 	 * Convert some object to JSON-String
 	 * 
-	 * @param <T>
-	 *            - any type of object
-	 * @param obj
-	 *            - any object
-	 * @return String or null
+	 * @param <T> - any type of object
+	 * @param obj - any object
+	 * 
+	 * @return {@link String} with JSON description or {@code null} in case of error
 	 */
 	public static <T> String objectToJsonString(T obj) {
 

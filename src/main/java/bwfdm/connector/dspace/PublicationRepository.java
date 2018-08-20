@@ -34,7 +34,7 @@ public interface PublicationRepository {
 	/**
 	 * Check if publication repository is accessible via API
 	 * 
-	 * @return
+	 * @return {@code true} if repository is accessible and {@code false} otherwise
 	 */
 	public boolean isAccessible();
 
@@ -48,23 +48,25 @@ public interface PublicationRepository {
 	 * where password is always needed.
 	 * <p>
 	 * 
-	 * @param user
-	 * @param password
+	 * @param user - user login
+	 * @param password - user password
 	 */
 	public void setCredentials(String user, char[] password);
 
 	/**
 	 * Check if user is registered in the publication repository
 	 * 
-	 * @param loginName
-	 * @return
+	 * @param loginName - user login name
+	 * 
+	 * @return {@code true} if user is registered and {@code false} otherwise
 	 */
 	public boolean isUserRegistered(String loginName);
 
 	/**
 	 * Check if user is assigned to publish something in the repository
 	 *
-	 * @param loginName
+	 * @param loginName - user login name
+	 * 
 	 * @return {@code true} if count of user available collections is great than
 	 *         zero, otherwise {@code false}
 	 */
@@ -74,7 +76,8 @@ public interface PublicationRepository {
 	 * Get collections, which are available for the user Could be, that user has an
 	 * access only for some specific collections.
 	 * 
-	 * @param loginName
+	 * @param loginName - user login name
+	 * 
 	 * @return Map of Strings, where key="Collection full URL", value="Collection
 	 *         title", or empty Map if there are not available collections.
 	 */
@@ -86,8 +89,9 @@ public interface PublicationRepository {
 	 * <p>
 	 * Could be, that user has an access only for some specific collections.
 	 * 
-	 * @param loginName,
-	 *            nameSeparator
+	 * @param loginName - user login name
+	 * @param fullNameSeparator - separator between name parts, as a {@link String}, e.g. "/"
+	 *            
 	 * @return Map of Strings, where key="Collection full URL", value="Collection
 	 *         full name", or empty Map if there are not available collections.
 	 */
@@ -108,7 +112,8 @@ public interface PublicationRepository {
 	 * <p>
 	 * As credentials for the request are used login/password of the admin-user
 	 * 
-	 * @param fullNameSeparator
+	 * @param fullNameSeparator - separator between name parts, as a {@link String}, e.g. "/"
+	 * 
 	 * @return Map of Strings, where key="Collection full URL", value="Collection
 	 *         full name", or empty Map if there are not available collections.
 	 */
@@ -117,10 +122,11 @@ public interface PublicationRepository {
 	/**
 	 * Publish a file to some collections, which is available for the user.
 	 * 
-	 * @param userLogin
-	 * @param collectionURL
-	 * @param fileFullPath
-	 * @return
+	 * @param userLogin - user login name
+	 * @param collectionURL - URL of the collection where to publish
+	 * @param fileFullPath - full path to the file 
+	 * 
+	 * @return {@code true} if publication was successful and {@code false} otherwise (e.g. some error has occurred)
 	 */
 	public boolean publishFile(String userLogin, String collectionURL, File fileFullPath);
 
@@ -128,10 +134,11 @@ public interface PublicationRepository {
 	 * Publish metadata only (without any file) to some collection, which is
 	 * available for the user. Metadata are described as a {@link java.util.Map}.
 	 * 
-	 * @param userLogin
-	 * @param collectionURL
-	 * @param metadataMap
-	 * @return
+	 * @param userLogin - user login name
+	 * @param collectionURL - URL of the collection where to publish
+	 * @param metadataMap - metadata as a Map
+	 * 
+	 * @return {@code true} if publication was successful and {@code false} otherwise (e.g. some error has occurred)
 	 */
 	public boolean publishMetadata(String userLogin, String collectionURL, Map<String, String> metadataMap);
 
@@ -139,10 +146,11 @@ public interface PublicationRepository {
 	 * Publish metadata only (without any file) to some collection, which is
 	 * available for the user. Metadata are described in the xml-file.
 	 * 
-	 * @param userLogin
-	 * @param collectionURL
-	 * @param metadataFileXML
-	 * @return
+	 * @param userLogin - user login name
+	 * @param collectionURL - URL of the collection where to publish
+	 * @param metadataFileXML - metadata as a file in XML-format
+	 * 
+	 * @return {@code true} if publication was successful and {@code false} otherwise (e.g. some error has occurred)
 	 */
 	public boolean publishMetadata(String userLogin, String collectionURL, File metadataFileXML);
 
@@ -150,11 +158,12 @@ public interface PublicationRepository {
 	 * Publish a file together with the metadata. Metadata are described as a
 	 * {@link java.util.Map}.
 	 * 
-	 * @param userLogin
-	 * @param collectionURL
-	 * @param fileFullPath
-	 * @param metadataMap
-	 * @return
+	 * @param userLogin - user login name
+	 * @param collectionURL - URL of the collection where to publish
+	 * @param fileFullPath - full path to the file 
+	 * @param metadataMap - metadata as a Map
+	 * 
+	 * @return {@code true} if publication was successful and {@code false} otherwise (e.g. some error has occurred)
 	 */
 	public boolean publishFileAndMetadata(String userLogin, String collectionURL, File fileFullPath,
 			Map<String, String> metadataMap);
@@ -163,11 +172,12 @@ public interface PublicationRepository {
 	 * Publish a file together with the metadata. Metadata are described in the
 	 * xml-file.
 	 * 
-	 * @param userLogin
-	 * @param collectionURL
-	 * @param fileFullPath
-	 * @param metadataFileXML
-	 * @return
+	 * @param userLogin - user login name
+	 * @param collectionURL - URL of the collection where to publish 
+	 * @param fileFullPath - full path to the file
+	 * @param metadataFileXML - metadata as a file in XML-format
+	 *  
+	 * @return {@code true} if publication was successful and {@code false} otherwise (e.g. some error has occurred)
 	 */
 	public boolean publishFileAndMetadata(String userLogin, String collectionURL, File fileFullPath,
 			File metadataFileXML);
