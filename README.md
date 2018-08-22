@@ -7,37 +7,16 @@ Library to publish files and/or metadata to DSpace-based publication repositorie
 1. Textual description of the currently implemented methods could be found in [functionality.md](functionality.md)
 2. The main interface is [PublicationRepository.java](src/main/java/bwfdm/connector/dspace/PublicationRepository.java) interface
 
-## How to add to your maven project
-    
-1. As dependency from maven repository 
-    - TODO: will be added soon ...
-    
-2. As dependency from GitHub (more details see here: <a href="https://jitpack.io/docs/#jitpackio" target="_blank">JitPack</a>)
-    
-    - add JitPack repository to pom.xml
-    
-	```
-	<repositories>
-		<!-- JitPack package repository to use libraries
-			not only from maven repository, but also from GitHub.
-			More info: https://jitpack.io/docs/#jitpackio -->
-		<repository>
-			<id>jitpack-repo</id>
-			<url>https://jitpack.io</url>
-		</repository>
-	</repositories>
-	```
-    
-    - add the latest version of "dspace-connector" as a new dependency to pom.xml
-    
-	```
-	<dependency>
-		<groupId>com.github.bwfdm</groupId>
-		<artifactId>dspace-connector</artifactId>
-		<version>master-SNAPSHOT</version>
-	</dependency>
-	```
-    
+## How to add to your maven project (as dependency in pom.xml)
+  
+```
+<dependency>
+	<groupId>com.github.bwfdm</groupId>
+	<artifactId>dspace-connector</artifactId>
+	<version>0.1.0</version>
+</dependency>  
+```
+      
 ## How to use
 - As an example see [DSpaceTest_v6.java](src/test/java/bwfdm/connector/dspace/test/DSpaceTest_v6.java)
 - ..
