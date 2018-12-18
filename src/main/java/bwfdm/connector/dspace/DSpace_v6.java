@@ -683,6 +683,10 @@ public class DSpace_v6 extends SwordExporter implements DSpaceRepository {
 		// Extend collection name with communities and separators
 		for (String collectionUrl : collectionsMap.keySet()) {
 			List<String> communities = this.getCommunitiesForCollection(collectionUrl, serviceDocument, hierarchy, existedCollectionObjects);
+			// Check if communities is null (e.g. wrong collectionUrl)
+			if(communities == null) {
+				return null; // error
+			}
 			String fullName = "";
 			for (String community : communities) {
 				fullName += community + fullNameSeparator; // add community + separator
