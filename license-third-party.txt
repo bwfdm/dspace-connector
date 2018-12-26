@@ -11,8 +11,8 @@
 * License: Apache 2.0 http://www.apache.org/licenses/LICENSE-2.0.txt
 
 ##### com.fasterxml.jackson.core:jackson-databind 
-* https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind/2.8.8
-* Version: 2.8.8
+* https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind/2.8.11.1
+* Version: 2.8.11.1
 * License: Apache 2.0 http://www.apache.org/licenses/LICENSE-2.0.txt
 
 ##### org.slf4j:slf4j-api, Copyright (c) 2004-2017 QOS.ch 
@@ -29,6 +29,11 @@
 * https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient
 * Version: 4.5.2
 * License: Apache 2.0 http://www.apache.org/licenses/LICENSE-2.0.txt
+
+##### com.github.bwfdm:exporter-commons
+* https://mvnrepository.com/artifact/com.github.bwfdm/exporter-commons
+* Version: 0.1.0
+* License: MIT license https://opensource.org/licenses/mit-license.php
 
 
 ****
@@ -807,6 +812,7 @@ from your version.
 The following libraries use this license:
 * org.slf4j:slf4j-api
 * org.slf4j:slf4j-simple
+* com.github.bwfdm:exporter-commons
 
 #### MIT License (full text)
 Copyright <YEAR> <COPYRIGHT HOLDER>

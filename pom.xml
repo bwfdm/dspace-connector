@@ -187,8 +187,7 @@
     </build>    
 
 	<dependencies>
-		<!-- TODO: For HTTP communication? -->
-		<!-- TODO: update version? -->
+		<!-- For HTTP communication -->
 		<dependency>
 			<groupId>javax.ws.rs</groupId>
 			<artifactId>javax.ws.rs-api</artifactId>
@@ -208,11 +207,10 @@
 			</exclusions>
 		</dependency>
 		<!-- Jackson to convert JSON-String to any data transfer object (DTO) -->
-		<!-- TODO: update version? -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
-			<version>2.8.8</version>
+			<version>2.8.11.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -228,6 +226,11 @@
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
 			<version>4.5.2</version>
+		</dependency>
+		<dependency>
+			<groupId>com.github.bwfdm</groupId>
+			<artifactId>exporter-commons</artifactId>
+			<version>0.1.0</version>
 		</dependency>
 	</dependencies>
 </project>
