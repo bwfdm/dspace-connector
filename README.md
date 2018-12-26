@@ -13,7 +13,7 @@ Library to publish files and/or metadata to DSpace-based publication repositorie
 <dependency>
 	<groupId>com.github.bwfdm</groupId>
 	<artifactId>dspace-connector</artifactId>
-	<version>0.1.0</version>
+	<version>0.2.0</version>
 </dependency>  
 ```
       
