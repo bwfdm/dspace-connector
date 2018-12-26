@@ -298,10 +298,10 @@ public class DSpace_v6 extends SwordExporter implements DSpaceRepository {
 	 *
 	 * @return {@link String} with the URL to edit the entry (with "edit" substring inside)
 	 * 
-	 * @throws {@link IOException}
-	 * @throws {@link SWORDClientException}
-	 * @throws {@link SWORDError}
-	 * @throws {@link ProtocolViolationException}
+	 * @throws IOException in case of IO error
+	 * @throws SWORDClientException in case of SWORD error
+	 * @throws SWORDError in case of SWORD error
+	 * @throws ProtocolViolationException in case of SWORD error
 	 */
 	protected String exportMetadataAsMap(String url, Map<String, List<String>> metadataMap,
 			SwordRequestType swordRequestType)throws IOException, SWORDClientException, SWORDError, ProtocolViolationException {
@@ -338,10 +338,10 @@ public class DSpace_v6 extends SwordExporter implements DSpaceRepository {
 	 * 
 	 * @return {@link String} with the URL to edit the entry (with "edit" substring inside)
 	 * 
-	 * @throws {@link IOException}
-	 * @throws {@link SWORDClientException}
-	 * @throws {@link SWORDError}
-	 * @throws {@link ProtocolViolationException}
+	 * @throws IOException in case of IO error
+	 * @throws SWORDClientException in case of SWORD error
+	 * @throws SWORDError in case of SWORD error
+	 * @throws ProtocolViolationException in case of SWORD error
 	 */
 	protected String exportMetadataAsFile(String url, File metadataFileXML, SwordRequestType swordRequestType) 
 				throws IOException, SWORDClientException, SWORDError, ProtocolViolationException{
@@ -374,7 +374,7 @@ public class DSpace_v6 extends SwordExporter implements DSpaceRepository {
 	
 	
 	/**
-	 * Export (create) a new entry with a file in some collection, which is available.
+	 * Export (create) a new entry with a file in some collection, which is available for the current authentication credentials.
 	 * <p>
 	 * IMPORTANT: authentication credentials are used implicitly. 
 	 * Definition of the credentials is realized via the class constructor.
@@ -391,11 +391,11 @@ public class DSpace_v6 extends SwordExporter implements DSpaceRepository {
 	 *
 	 * @return {@link String} with the URL of the new created entry or {@code null} in case of error.	
 	 *
-	 * @throws IOException
+	 * @throws IOException in case of IO error
 	 */
-	public String exportNewEntryWithFile(String collectionUrl, File file, boolean unpackFileIfArchive) throws IOException {
+	public String exportNewEntryWithFile(String collectionURL, File file, boolean unpackFileIfArchive) throws IOException {
 
-		requireNonNull(collectionUrl);
+		requireNonNull(collectionURL);
 		requireNonNull(file);
 		requireNonNull(unpackFileIfArchive);
 		
@@ -403,7 +403,7 @@ public class DSpace_v6 extends SwordExporter implements DSpaceRepository {
 		String packageFormat = SwordExporter.getPackageFormat(file.getName(), unpackFileIfArchive); // unpack zip-archive or export as a binary 
 		
 		try {
-			SwordResponse response = super.exportElement(collectionUrl, SwordRequestType.DEPOSIT, mimeFormat, packageFormat, file, null);
+			SwordResponse response = super.exportElement(collectionURL, SwordRequestType.DEPOSIT, mimeFormat, packageFormat, file, null);
 			if(response instanceof DepositReceipt) {
 				return ((DepositReceipt)response).getEditLink().getHref(); // "edit" URL from the DEPOSIT receipt
 			} else {
@@ -440,8 +440,8 @@ public class DSpace_v6 extends SwordExporter implements DSpaceRepository {
 	 * 		<b>IMPORTANT for DSpace repository:</b> further update/extension of the media part (e.g. uploaded files)
 	 * 		via SWORD is not supported, only update of the metadata is allowed.
 	 * 
-	 * @throws IOException
-	 * @throws SWORDClientException
+	 * @throws IOException in case of IO error
+	 * @throws SWORDClientException in case of SWORD error
 	 */
 	public String createEntryWithMetadata(String collectionURL, File metadataFileXml) throws IOException, SWORDClientException{
 		
@@ -474,8 +474,20 @@ public class DSpace_v6 extends SwordExporter implements DSpaceRepository {
 	 * @param unpackZip decides whether to unpack the zipfile or places the packed zip file as uploaded data
 	 * @param metadataFileXml holds the metadata which is necessary for the ingest
 	 *
-	 * @throws IOException
-	 * @throws {@link SWORDClientException}
+	 * @return {@link String} with the entry URL which includes "/swordv2/edit/" substring inside. 
+	 * 		This URL could be used without changes for further update of the metadata 
+	 * 		(see {@link #replaceMetadataEntry(String, Map) replaceMetadataEntry(entryURL, metadataMap)}) 
+	 * 		<p>
+	 * 		<b>IMPORTANT for Dataverse repository:</b> for further update/extension of the media part 
+	 * 		(e.g. uploaded files inside the dataset) please replace "/swordv2/edit/" substring inside the entry URL to 
+	 * 		"/swordv2/edit-media/". 
+	 * 		For more details please visit <a href="http://guides.dataverse.org/en/latest/api/sword.html">http://guides.dataverse.org/en/latest/api/sword.html</a>
+	 * 		<p>
+	 * 		<b>IMPORTANT for DSpace repository:</b> further update/extension of the media part (e.g. uploaded files)
+	 * 		via SWORD is not supported, only update of the metadata is allowed.
+	 *
+	 * @throws IOException in case of IO error
+	 * @throws SWORDClientException in case of SWORD error
 	 */
 	public String createEntryWithMetadataAndFile(String collectionURL, File file, boolean unpackZip, File metadataFileXml)
 			throws IOException, SWORDClientException {
