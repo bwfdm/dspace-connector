@@ -17,9 +17,9 @@
 <configList>
     
     <repoConfig>
-        <serviceDocumentURL>https://some-repository-1.org/swordv2/servicedocument</serviceDocumentURL>
-        <restURL>https://some-repository-1.org/rest</restURL>
-        <publicationCollectionURL>http://some-repository-1.org/swordv2/collection/12345/1</publicationCollectionURL>
+        <serviceDocumentUrl>https://some-repository-1.org/swordv2/servicedocument</serviceDocumentUrl>
+        <restUrl>https://some-repository-1.org/rest</restUrl>
+        <publicationCollectionUrl>http://some-repository-1.org/swordv2/collection/12345/1</publicationCollectionUrl>
         <adminUser>some-admin-user@e-mail.com</adminUser>
         <normalUser>some-normal-user@e-mail.com</normalUser>
     </repoConfig>
@@ -31,9 +31,9 @@
      -->
     
     <repoConfig>
-        <serviceDocumentURL>https://some-repository-2.org/swordv2/servicedocument</serviceDocumentURL>
-        <restURL>https://some-repository-2.org/rest</restURL>
-        <publicationCollectionURL>https://some-repository-2.org/swordv2/collection/12345/1</publicationCollectionURL>
+        <serviceDocumentUrl>https://some-repository-2.org/swordv2/servicedocument</serviceDocumentUrl>
+        <restUrl>https://some-repository-2.org/rest</restUrl>
+        <publicationCollectionUrl>https://some-repository-2.org/swordv2/collection/12345/1</publicationCollectionUrl>
         <adminUser>some-admin-user@e-mail.com</adminUser>
         <normalUser>some-normal-user@e-mail.com</normalUser>
     </repoConfig>

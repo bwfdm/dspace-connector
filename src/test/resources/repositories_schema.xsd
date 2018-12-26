@@ -8,13 +8,13 @@
 		    <xsd:complexType>		       
 		       <xsd:sequence>
 		           
-		           <xsd:element name="serviceDocumentURL" type="xsd:string" /> 
+		           <xsd:element name="serviceDocumentUrl" type="xsd:string" /> 
 		           <!-- e.g. "https://some-repository.com/swordv2/servicedocument" -->
                    
-                   <xsd:element name="restURL" type="xsd:string" /> 
+                   <xsd:element name="restUrl" type="xsd:string" /> 
                    <!-- e.g. "https://some-repository.com/rest" -->
                    
-                   <xsd:element name="publicationCollectionURL" type="xsd:string" /> 
+                   <xsd:element name="publicationCollectionUrl" type="xsd:string" /> 
                    <!-- e.g. "https://some-repository.com/swordv2/collection/12345/1" -->
                    
                    <xsd:element name="adminUser" type="xsd:string" />
