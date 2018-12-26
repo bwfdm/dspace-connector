@@ -187,8 +187,7 @@
     </build>    
 
 	<dependencies>
-		<!-- TODO: For HTTP communication? -->
-		<!-- TODO: update version? -->
+		<!-- For HTTP communication -->
 		<dependency>
 			<groupId>javax.ws.rs</groupId>
 			<artifactId>javax.ws.rs-api</artifactId>
