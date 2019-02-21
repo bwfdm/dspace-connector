@@ -32,6 +32,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.swordapp.client.Content;
@@ -84,12 +85,12 @@ public class DSpace_v6 extends SwordExporter implements DSpaceRepository {
 		
 		this.setServiceDocumentURL(serviceDocumentURL);
 		this.setAllRestURLs(restURL);
-
-		// HttpClient which ignores the ssl certificate
-		this.httpClient = WebUtils.createHttpClientWithSSLSupport();
-
-		// TODO: original version, without ignoring of ssl certificate
-		// this.client = HttpClientBuilder.create().build();	
+		
+		// Traditional way to create client. SSL certificate must be actual in this case.
+		this.httpClient = HttpClientBuilder.create().build();
+		
+		// In case of problems with SSL - httpClient which ignores the SSL certificate
+		//this.httpClient = WebUtils.createHttpClientIgnoringSSL();
 	}
 	
 	public DSpace_v6(String serviceDocumentURL, String restURL, String userName, char[] userPassword) {
@@ -104,11 +105,11 @@ public class DSpace_v6 extends SwordExporter implements DSpaceRepository {
 		this.setServiceDocumentURL(serviceDocumentURL);
 		this.setAllRestURLs(restURL);
 
-		// HttpClient which ignores the ssl certificate
-		this.httpClient = WebUtils.createHttpClientWithSSLSupport();
-
-		// TODO: original version, without ignoring of ssl certificate
-		// this.client = HttpClientBuilder.create().build();
+		// Traditional way to create client. SSL certificate must be actual in this case.
+		this.httpClient = HttpClientBuilder.create().build();
+		
+		// In case of problems with SSL - httpClient which ignores the SSL certificate
+		//this.httpClient = WebUtils.createHttpClientIgnoringSSL();
 	}
 	
 
