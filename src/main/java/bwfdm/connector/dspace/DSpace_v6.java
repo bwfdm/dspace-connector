@@ -296,6 +296,11 @@ public class DSpace_v6 extends SwordExporter implements DSpaceRepository {
 	 * 				where to to export (or edit) metadata 
 	 * @param metadataMap - metadata as a Map
 	 * @param swordRequestType - object of {@link SwordRequestType}
+	 * @param inProgress {@code boolean} value for the "In-Progress" header 
+	 * 		  <p>
+	 * 	      For DSpace "In-Progress: true" means, that export will be done at first to the user's workspace, 
+	 *        where further editing of the exported element is possible. And "In-Progress: false" means export directly 
+	 *        to the workflow, without a possibility of further editing.
 	 *
 	 * @return {@link String} with the URL to edit the entry (with "edit" substring inside)
 	 * 
@@ -305,10 +310,10 @@ public class DSpace_v6 extends SwordExporter implements DSpaceRepository {
 	 * @throws ProtocolViolationException in case of SWORD error
 	 */
 	protected String exportMetadataAsMap(String url, Map<String, List<String>> metadataMap,
-			SwordRequestType swordRequestType)throws IOException, SWORDClientException, SWORDError, ProtocolViolationException {
+			SwordRequestType swordRequestType, boolean inProgress)throws IOException, SWORDClientException, SWORDError, ProtocolViolationException {
 
 		SwordResponse response = super.exportElement(url, swordRequestType, SwordExporter.MIME_FORMAT_ATOM_XML, 
-				UriRegistry.PACKAGE_BINARY, null, metadataMap);
+				UriRegistry.PACKAGE_BINARY, null, metadataMap, inProgress);
 		
 		if(response instanceof DepositReceipt) {
 			return ((DepositReceipt)response).getEditLink().getHref(); //response from DEPOSIT request
@@ -336,6 +341,11 @@ public class DSpace_v6 extends SwordExporter implements DSpaceRepository {
 	 * 			  - file in XML-format (ATOM format of the metadata description) and
 	 *            	with an XML-extension  
 	 * @param swordRequestType - object of {@link SwordRequestType}
+	 * @param inProgress {@code boolean} value for the "In-Progress" header 
+	 * 		  <p>
+	 * 	      For DSpace "In-Progress: true" means, that export will be done at first to the user's workspace, 
+	 *        where further editing of the exported element is possible. And "In-Progress: false" means export directly 
+	 *        to the workflow, without a possibility of further editing.
 	 * 
 	 * @return {@link String} with the URL to edit the entry (with "edit" substring inside)
 	 * 
@@ -344,7 +354,7 @@ public class DSpace_v6 extends SwordExporter implements DSpaceRepository {
 	 * @throws SWORDError in case of SWORD error
 	 * @throws ProtocolViolationException in case of SWORD error
 	 */
-	protected String exportMetadataAsFile(String url, File metadataFileXML, SwordRequestType swordRequestType) 
+	protected String exportMetadataAsFile(String url, File metadataFileXML, SwordRequestType swordRequestType, boolean inProgress) 
 				throws IOException, SWORDClientException, SWORDError, ProtocolViolationException{
 
 		// Check if file has an XML-extension
@@ -356,7 +366,7 @@ public class DSpace_v6 extends SwordExporter implements DSpaceRepository {
 
 		String mimeFormat = SwordExporter.MIME_FORMAT_ATOM_XML;
 		String packageFormat = super.getPackageFormat(metadataFileXML.getName());
-		SwordResponse response = super.exportElement(url, swordRequestType, mimeFormat, packageFormat, metadataFileXML, null);
+		SwordResponse response = super.exportElement(url, swordRequestType, mimeFormat, packageFormat, metadataFileXML, null, inProgress);
 		
 		if(response instanceof DepositReceipt) {
 			return ((DepositReceipt)response).getEditLink().getHref(); //response from DEPOSIT request
@@ -379,6 +389,8 @@ public class DSpace_v6 extends SwordExporter implements DSpaceRepository {
 	 * <p>
 	 * IMPORTANT: authentication credentials are used implicitly. 
 	 * Definition of the credentials is realized via the class constructor.
+	 * 
+	 * IMPORTANT: the header "In-Progress: true" will be used implicitly.
 	 *
 	 * @param collectionURL the full URL of the collection, where the export (ingest) will be done 
 	 * @param file an archive file with one or more files inside (e.g. ZIP-file as a standard) or a binary file 
@@ -404,7 +416,7 @@ public class DSpace_v6 extends SwordExporter implements DSpaceRepository {
 		String packageFormat = SwordExporter.getPackageFormat(file.getName(), unpackFileIfArchive); // unpack zip-archive or export as a binary 
 		
 		try {
-			SwordResponse response = super.exportElement(collectionURL, SwordRequestType.DEPOSIT, mimeFormat, packageFormat, file, null);
+			SwordResponse response = super.exportElement(collectionURL, SwordRequestType.DEPOSIT, mimeFormat, packageFormat, file, null, true); //use "In-Progress: true" implicitly
 			if(response instanceof DepositReceipt) {
 				return ((DepositReceipt)response).getEditLink().getHref(); // "edit" URL from the DEPOSIT receipt
 			} else {
@@ -428,6 +440,11 @@ public class DSpace_v6 extends SwordExporter implements DSpaceRepository {
 	 *
 	 * @param collectionURL holds the collection URL where the metadata will be exported to.
 	 * @param metadataFileXml XML-file with metadata in ATOM format.
+	 * @param inProgress {@code boolean} value for the "In-Progress" header 
+	 * 		  <p>
+	 * 	      For DSpace "In-Progress: true" means, that export will be done at first to the user's workspace, 
+	 *        where further editing of the exported element is possible. And "In-Progress: false" means export directly 
+	 *        to the workflow, without a possibility of further editing.
 	 * 
 	 * @return {@link String} with the entry URL which includes "/swordv2/edit/" substring inside. 
 	 * 		This URL could be used without changes for further update of the metadata 
@@ -444,13 +461,14 @@ public class DSpace_v6 extends SwordExporter implements DSpaceRepository {
 	 * @throws IOException in case of IO error
 	 * @throws SWORDClientException in case of SWORD error
 	 */
-	public String createEntryWithMetadata(String collectionURL, File metadataFileXml) throws IOException, SWORDClientException{
+	public String createEntryWithMetadata(String collectionURL, File metadataFileXml, boolean inProgress) throws IOException, SWORDClientException{
 		
 		requireNonNull(collectionURL);
 		requireNonNull(metadataFileXml);
+		requireNonNull(inProgress);
 		
 		try {
-			return exportMetadataAsFile(collectionURL, metadataFileXml, SwordRequestType.DEPOSIT);
+			return exportMetadataAsFile(collectionURL, metadataFileXml, SwordRequestType.DEPOSIT, inProgress);
 		} catch (ProtocolViolationException | SWORDError e) {
 			throw new SWORDClientException("Exception by creation of item with only metadta as XML-file: " 
 					+ e.getClass().getSimpleName() + ": " + e.getMessage());
@@ -474,6 +492,11 @@ public class DSpace_v6 extends SwordExporter implements DSpaceRepository {
 	 * @param file holds a file which can contain one or multiple files
 	 * @param unpackZip decides whether to unpack the zipfile or places the packed zip file as uploaded data
 	 * @param metadataFileXml holds the metadata which is necessary for the ingest
+	 * @param inProgress {@code boolean} value for the "In-Progress" header 
+	 * 		  <p>
+	 * 	      For DSpace "In-Progress: true" means, that export will be done at first to the user's workspace, 
+	 *        where further editing of the exported element is possible. And "In-Progress: false" means export directly 
+	 *        to the workflow, without a possibility of further editing.
 	 *
 	 * @return {@link String} with the entry URL which includes "/swordv2/edit/" substring inside. 
 	 * 		This URL could be used without changes for further update of the metadata 
@@ -490,7 +513,7 @@ public class DSpace_v6 extends SwordExporter implements DSpaceRepository {
 	 * @throws IOException in case of IO error
 	 * @throws SWORDClientException in case of SWORD error
 	 */
-	public String createEntryWithMetadataAndFile(String collectionURL, File file, boolean unpackZip, File metadataFileXml)
+	public String createEntryWithMetadataAndFile(String collectionURL, File file, boolean unpackZip, File metadataFileXml, boolean inProgress)
 			throws IOException, SWORDClientException {
 		
 		requireNonNull(collectionURL);
@@ -504,7 +527,7 @@ public class DSpace_v6 extends SwordExporter implements DSpaceRepository {
 		try {
 			// Step 1: export file (as file or archive), without metadata
 			SwordResponse response = super.exportElement(collectionURL, SwordRequestType.DEPOSIT, mimeFormat, 
-					packageFormat, file, null); // "POST" request (DEPOSIT)
+					packageFormat, file, null, true); // "POST" request (DEPOSIT). Use "In-Progress: true" explicitly, to avoid unwanted publication already on the 1st step
 			String editLink = response.getLocation();
 			if (editLink == null) {
 				throw new SWORDClientException("Error by exporting file and metadta as xml-file: "
@@ -515,7 +538,7 @@ public class DSpace_v6 extends SwordExporter implements DSpaceRepository {
 			// Step 2: add metadata (as a XML-file)
 			//
 			// "PUT" request (REPLACE) is used to overwrite some previous automatically generated metadata
-			return exportMetadataAsFile(editLink, metadataFileXml, SwordRequestType.REPLACE);
+			return exportMetadataAsFile(editLink, metadataFileXml, SwordRequestType.REPLACE, inProgress);
 	
 			// NOTE: if replace order (step 1: export metadata, step 2: export file) --> Bad request, ERROR 400
 			
@@ -541,10 +564,7 @@ public class DSpace_v6 extends SwordExporter implements DSpaceRepository {
 	 * <p>
 	 * Implementation via parsing of response String using regular expressions.
 	 * 
-	 * @return {@inheritDoc} 
-	 * 		   Returns {@code null} in case of error. 
 	 */
-	//TODO: remove extra "return" section in javadoc above with new version of exporter-commons
 	@Override
 	public Map<String, String> getCollectionEntries(String collectionUrl) {
 		
@@ -594,14 +614,14 @@ public class DSpace_v6 extends SwordExporter implements DSpaceRepository {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String createEntryWithMetadata(String collectionURL, Map<String, List<String>> metadataMap) 
+	public String createEntryWithMetadata(String collectionURL, Map<String, List<String>> metadataMap, boolean inProgress) 
 			throws SWORDClientException {
 		
 		requireNonNull(collectionURL);
 		requireNonNull(metadataMap);
 		
 		try {			
-			return exportMetadataAsMap(collectionURL, metadataMap, SwordRequestType.DEPOSIT);			
+			return exportMetadataAsMap(collectionURL, metadataMap, SwordRequestType.DEPOSIT, inProgress);			
 		} catch (IOException | ProtocolViolationException | SWORDError e) {
 			throw new SWORDClientException("Exception by export metadta as Map: " + e.getClass().getSimpleName() + ": " + e.getMessage());
 		}
@@ -615,13 +635,14 @@ public class DSpace_v6 extends SwordExporter implements DSpaceRepository {
 	 * 2 - add metadata via PUT request.
 	 */
 	@Override
-	public String createEntryWithMetadataAndFile(String collectionURL, File file, boolean unpackZip, Map<String, List<String>> metadataMap)
+	public String createEntryWithMetadataAndFile(String collectionURL, File file, boolean unpackZip, Map<String, List<String>> metadataMap, boolean inProgress)
 			throws IOException, SWORDClientException {
 		
 		requireNonNull(collectionURL);
 		requireNonNull(file);
 		requireNonNull(unpackZip);
 		requireNonNull(metadataMap);
+		requireNonNull(inProgress);
 		
 		String mimeFormat = SwordExporter.MIME_FORMAT_ZIP; // as a common file (even for XML-file)
 		String packageFormat = SwordExporter.getPackageFormat(file.getName(), unpackZip);
@@ -629,7 +650,7 @@ public class DSpace_v6 extends SwordExporter implements DSpaceRepository {
 		try {
 			// Step 1: export file (as file or archive), without metadata
 			SwordResponse response = super.exportElement(collectionURL, SwordRequestType.DEPOSIT, mimeFormat, 
-					packageFormat, file, null); // "POST" request (DEPOSIT)
+					packageFormat, file, null, true); // "POST" request (DEPOSIT). Use "In-Progress: true" explicitly, to avoid unwanted publication already on the 1st step 
 			String editLink = response.getLocation();
 			if (editLink == null) {
 				throw new SWORDClientException("Error by export file and metadta as Map: "
@@ -640,7 +661,7 @@ public class DSpace_v6 extends SwordExporter implements DSpaceRepository {
 			// Step 2: add metadata (as a Map structure)
 			//
 			//"PUT" request (REPLACE) is used to overwrite some previous automatically generated metadata
-			return exportMetadataAsMap(editLink, metadataMap, SwordRequestType.REPLACE);
+			return exportMetadataAsMap(editLink, metadataMap, SwordRequestType.REPLACE, inProgress);
 						
 			// NOTE: if replace order (step 1: export metadata, step 2: export file) --> Bad request, ERROR 400
 			
@@ -787,11 +808,14 @@ public class DSpace_v6 extends SwordExporter implements DSpaceRepository {
 	 * {@inheritDoc}
 	 * <p>
 	 * DSpace-v6: SWORD requests will be done.
+	 * <p>
+	 * <b>IMPORTANT:</b> the header "In-Progress: true" will be used implicitly. 
+	 * 		        New entry will be placed in the user's workspace for further editing before the final publication.  
 	 */
 	@Override
 	public String exportNewEntryWithMetadata(String collectionURL, Map<String, List<String>> metadataMap) {
 		try {
-			return this.createEntryWithMetadata(collectionURL, metadataMap);
+			return this.createEntryWithMetadata(collectionURL, metadataMap, true); // "In-Progress: true" is used implicitly
 		} catch (SWORDClientException e) {
 			log.error("Exception by creation of new entry with metadata as Map.", e);
 			return null;
@@ -803,13 +827,16 @@ public class DSpace_v6 extends SwordExporter implements DSpaceRepository {
 	 * {@inheritDoc}
 	 * <p>
 	 * DSpace-v6: SWORD requests will be done.
+	 * <p>
+	 * <b>IMPORTANT:</b> the header "In-Progress: true" will be used implicitly. 
+	 * 		        New entry will be placed in the user's workspace for further editing before the final publication. 
 	 */
 	@Override
 	public String exportNewEntryWithFileAndMetadata(String collectionURL, File file, boolean unpackFileIfArchive,
 			Map<String, List<String>> metadataMap) throws IOException {
 		
 		try {
-			return this.createEntryWithMetadataAndFile(collectionURL, file, unpackFileIfArchive, metadataMap);
+			return this.createEntryWithMetadataAndFile(collectionURL, file, unpackFileIfArchive, metadataMap, true); // "In-Progress: true" is used implicitly
 		} catch (SWORDClientException e) {
 			log.error("Exception by creation of new entry with file and metadata as Map.", e);
 			return null;

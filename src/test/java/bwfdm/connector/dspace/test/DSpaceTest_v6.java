@@ -65,6 +65,7 @@ public class DSpaceTest_v6 {
 	private static File txtFile = new File(DSpaceTest_v6.class.getClassLoader().getResource("testfiles/test-file.txt").getFile());
 	private static File otherFile = new File(DSpaceTest_v6.class.getClassLoader().getResource("testfiles/test-file.with.dots.txt.t").getFile());
 	
+	private static boolean inProgress = true;
 	
 	public static void main(String[] args) {
 		
@@ -358,7 +359,7 @@ public class DSpaceTest_v6 {
 		output += "\n" + "== Create entry with map-metadata ==\n";
 		metadataMap.put("title", Arrays.asList("DSpace_v6 test, create entry with map-metadata"));
 		try {
-			output += dspace_v6.createEntryWithMetadata(exportCollectionUrl, metadataMap) + "\n";
+			output += dspace_v6.createEntryWithMetadata(exportCollectionUrl, metadataMap, inProgress) + "\n";
 		} catch (SWORDClientException e) {
 			output += "ERROR! Exception during creation of entry with map-metadata: " + e.getMessage() + "\n";
 		}
@@ -370,17 +371,30 @@ public class DSpaceTest_v6 {
 			
 			// ZIP-package with files only (no extra xml-file)
 			metadataMap.put("title", Arrays.asList("DSpace_v6 test, create entry with map-metadata and file: " + zipPackageFilesOnly.getName()));
-			output += dspace_v6.createEntryWithMetadataAndFile(exportCollectionUrl, zipPackageFilesOnly, false, metadataMap) + "\n";
-			output += dspace_v6.createEntryWithMetadataAndFile(exportCollectionUrl, zipPackageFilesOnly, true, metadataMap) + "\n";
+			output += dspace_v6.createEntryWithMetadataAndFile(exportCollectionUrl, zipPackageFilesOnly, false, metadataMap, inProgress) + "\n";
+			output += dspace_v6.createEntryWithMetadataAndFile(exportCollectionUrl, zipPackageFilesOnly, true, metadataMap, inProgress) + "\n";
 			
 			// ZIP-package with files and extra xml-file
 			metadataMap.put("title", Arrays.asList("DSpace_v6 test, create entry with map-metadata and file: " + zipPackageFilesWithMetadata.getName()));
-			output += dspace_v6.createEntryWithMetadataAndFile(exportCollectionUrl, zipPackageFilesWithMetadata, false, metadataMap) + "\n";
-			output += dspace_v6.createEntryWithMetadataAndFile(exportCollectionUrl, zipPackageFilesWithMetadata, true, metadataMap) + "\n";		
+			output += dspace_v6.createEntryWithMetadataAndFile(exportCollectionUrl, zipPackageFilesWithMetadata, false, metadataMap, inProgress) + "\n";
+			output += dspace_v6.createEntryWithMetadataAndFile(exportCollectionUrl, zipPackageFilesWithMetadata, true, metadataMap, inProgress) + "\n";		
 		
 		} catch (IOException | SWORDClientException e) {
 			output += "ERROR! Exception during entry creation: " + e.getMessage() + "\n";
 		}
+		
+		
+		// Create entry with map-metadata and file with "In-Progress: false"
+		try {
+			output += "\n" + "== Create entry with metadata and file with \"In-Progress: false\" ==\n";
+			
+			// ZIP-package with files and extra xml-file
+			metadataMap.put("title", Arrays.asList("DSpace_v6 test, create entry with map-metadata and file: " + zipPackageFilesWithMetadata.getName() + ", In-Progress: false"));
+			output += dspace_v6.createEntryWithMetadataAndFile(exportCollectionUrl, zipPackageFilesWithMetadata, true, metadataMap, false) + "\n"; // "In-Progress: false" explicitly		
+		
+		} catch (IOException | SWORDClientException e) {
+			output += "ERROR! Exception during entry creation with \"In-Progress: false\": " + e.getMessage() + "\n";
+		}		
 		
 		
 		// Export new entry with file
