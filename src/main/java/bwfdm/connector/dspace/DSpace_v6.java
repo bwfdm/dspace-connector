@@ -73,6 +73,22 @@ public class DSpace_v6 extends SwordExporter implements DSpaceRepository {
 
 	CloseableHttpClient httpClient;
 
+	/**
+	 * Create DSpace-v6 object, with activated "on-behalf-of" option, what allows to make a submission only 
+	 * with credentials of some privileged account (adminUser, adminPassword) on behalf of other account (standardUser),
+	 * without using the password of that account (standardUser). 
+	 * <p>
+	 * <b>INFO:</b> if you have some problems with the SSL certificate (e.g. some exception 
+	 * 		with "input is not a X.509 certificate" message), please add a certificate to your keystore, 
+	 *      more info here: 
+	 *      <a href="https://stackoverflow.com/questions/4325263/how-to-import-a-cer-certificate-into-a-java-keystore">https://stackoverflow.com/questions/4325263/how-to-import-a-cer-certificate-into-a-java-keystore</a>
+	 *      
+	 * @param serviceDocumentURL the URL string for the service document
+	 * @param restURL the URL string to the REST API
+	 * @param adminUser some privileged account, that will make a submission on behalf of other user (standardUser)
+	 * @param standardUser user account (traditionally without extra privileges), that will be an owner of the submission 
+	 * @param adminPassword password for the privileged account (adminUser)
+	 */
 	public DSpace_v6(String serviceDocumentURL, String restURL, String adminUser, String standardUser, char[] adminPassword) {
 
 		super(SwordExporter.createAuthCredentials(adminUser, adminPassword, standardUser));
@@ -87,12 +103,28 @@ public class DSpace_v6 extends SwordExporter implements DSpaceRepository {
 		this.setAllRestURLs(restURL);
 		
 		// Traditional way to create client. SSL certificate must be actual in this case.
+		// In case of some problems with the certificate (possible exceptions "input is not a X.509 certificate"), 
+		// read here -> https://stackoverflow.com/questions/4325263/how-to-import-a-cer-certificate-into-a-java-keystore
 		this.httpClient = HttpClientBuilder.create().build();
 		
 		// In case of problems with SSL - httpClient which ignores the SSL certificate
 		//this.httpClient = WebUtils.createHttpClientIgnoringSSL();
 	}
 	
+	
+	/**
+	 * Create DSpace-v6 object, without "on-behalf-of" option
+	 * <p>
+	 * <b>INFO:</b> if you have some problems with the SSL certificate (e.g. some exception 
+	 * 		with "input is not a X.509 certificate" message), please add a certificate to your keystore, 
+	 *      more info here: 
+	 *      <a href="https://stackoverflow.com/questions/4325263/how-to-import-a-cer-certificate-into-a-java-keystore">https://stackoverflow.com/questions/4325263/how-to-import-a-cer-certificate-into-a-java-keystore</a>
+	 *      
+	 * @param serviceDocumentURL the URL string for the service document
+	 * @param restURL the URL string to the REST API
+	 * @param userName user account
+	 * @param userPassword password for the user account
+	 */
 	public DSpace_v6(String serviceDocumentURL, String restURL, String userName, char[] userPassword) {
 	
 		super(SwordExporter.createAuthCredentials(userName, userPassword));
@@ -106,6 +138,8 @@ public class DSpace_v6 extends SwordExporter implements DSpaceRepository {
 		this.setAllRestURLs(restURL);
 
 		// Traditional way to create client. SSL certificate must be actual in this case.
+		// In case of some problems with the certificate (possible exceptions "input is not a X.509 certificate"), 
+		// read here -> https://stackoverflow.com/questions/4325263/how-to-import-a-cer-certificate-into-a-java-keystore
 		this.httpClient = HttpClientBuilder.create().build();
 		
 		// In case of problems with SSL - httpClient which ignores the SSL certificate
