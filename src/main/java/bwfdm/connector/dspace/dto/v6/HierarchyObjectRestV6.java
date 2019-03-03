@@ -24,25 +24,25 @@ import java.util.List;
  * 
  * @author Volodymyr Kushnarenko
  */
-public class HierarchyObject {
+public class HierarchyObjectRestV6 {
 
 	public String id;
 	public String name;
 	public String handle;
-	public List<HierarchyObject> community;
-	public List<HierarchyCollectionObject> collection;
+	public List<HierarchyObjectRestV6> community;
+	public List<HierarchyCollectionObjectRestV6> collection;
 	
 	
-	public List<String> getCommunityListForCollection(HierarchyObject obj, String collectionHandle, List<String> communityList) {
+	public List<String> getCommunityListForCollection(HierarchyObjectRestV6 obj, String collectionHandle, List<String> communityList) {
 				
-		for(HierarchyCollectionObject coll: obj.collection) {
+		for(HierarchyCollectionObjectRestV6 coll: obj.collection) {
 			if(coll.handle.equals(collectionHandle)) {
 				communityList.add(0, obj.name);
 				return communityList;
 			}
 		}
 		
-		for(HierarchyObject comm: obj.community) {
+		for(HierarchyObjectRestV6 comm: obj.community) {
 			List<String> list = getCommunityListForCollection(comm, collectionHandle, communityList);
 			if(list != null) {
 				list.add(0, obj.name);

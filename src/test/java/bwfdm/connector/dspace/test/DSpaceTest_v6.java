@@ -292,7 +292,7 @@ public class DSpaceTest_v6 {
 		List<String> communities = dspaceRepository.getCommunitiesForCollection(exportCollectionUrl);
 		if(communities != null) {
 			for(String community: communities) {
-				output += "-- URL: " + community;
+				output += "-- Community: " + community + "\n";
 			}
 		} else {
 			output += "Error by getting communities for collection! \n";
@@ -384,17 +384,17 @@ public class DSpaceTest_v6 {
 		}
 		
 		
-		// Create entry with map-metadata and file with "In-Progress: false"
-		try {
-			output += "\n" + "== Create entry with metadata and file with \"In-Progress: false\" ==\n";
-			
-			// ZIP-package with files and extra xml-file
-			metadataMap.put("title", Arrays.asList("DSpace_v6 test, create entry with map-metadata and file: " + zipPackageFilesWithMetadata.getName() + ", In-Progress: false"));
-			output += dspace_v6.createEntryWithMetadataAndFile(exportCollectionUrl, zipPackageFilesWithMetadata, true, metadataMap, false) + "\n"; // "In-Progress: false" explicitly		
-		
-		} catch (IOException | SWORDClientException e) {
-			output += "ERROR! Exception during entry creation with \"In-Progress: false\": " + e.getMessage() + "\n";
-		}		
+//		// Create entry with map-metadata and file with "In-Progress: false"
+//		try {
+//			output += "\n" + "== Create entry with metadata and file with \"In-Progress: false\" ==\n";
+//			
+//			// ZIP-package with files and extra xml-file
+//			metadataMap.put("title", Arrays.asList("DSpace_v6 test, create entry with map-metadata and file: " + zipPackageFilesWithMetadata.getName() + ", In-Progress: false"));
+//			output += dspace_v6.createEntryWithMetadataAndFile(exportCollectionUrl, zipPackageFilesWithMetadata, true, metadataMap, false) + "\n"; // "In-Progress: false" explicitly		
+//		
+//		} catch (IOException | SWORDClientException e) {
+//			output += "ERROR! Exception during entry creation with \"In-Progress: false\": " + e.getMessage() + "\n";
+//		}		
 		
 		
 		// Export new entry with file

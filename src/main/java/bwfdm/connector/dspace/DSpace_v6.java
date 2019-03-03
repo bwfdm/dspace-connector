@@ -39,7 +39,6 @@ import org.swordapp.client.Content;
 import org.swordapp.client.DepositReceipt;
 import org.swordapp.client.ProtocolViolationException;
 import org.swordapp.client.SWORDClientException;
-import org.swordapp.client.SWORDCollection;
 import org.swordapp.client.SWORDError;
 import org.swordapp.client.SWORDWorkspace;
 import org.swordapp.client.ServiceDocument;
@@ -47,7 +46,7 @@ import org.swordapp.client.SwordResponse;
 import org.swordapp.client.UriRegistry;
 
 import bwfdm.connector.dspace.dto.v6.CollectionObject;
-import bwfdm.connector.dspace.dto.v6.HierarchyObject;
+import bwfdm.connector.dspace.dto.v6.HierarchyObjectRestV6;
 import bwfdm.connector.dspace.utils.IOUtils;
 import bwfdm.connector.dspace.utils.JsonUtils;
 import bwfdm.connector.dspace.utils.WebUtils;
@@ -55,7 +54,7 @@ import bwfdm.connector.dspace.utils.WebUtils.RequestType;
 import bwfdm.exporter.commons.SwordExporter;
 
 
-public class DSpace_v6 extends SwordExporter implements DSpaceRepository {
+public class DSpace_v6 extends SwordExporter implements DSpaceRepository, DSpaceRepositorySwordOnly {
 
 	protected static final Logger log = LoggerFactory.getLogger(DSpace_v6.class);
 
@@ -200,14 +199,14 @@ public class DSpace_v6 extends SwordExporter implements DSpaceRepository {
 	 * 
 	 * @param collectionURL - URL of the collection as {@link String}
 	 * @param serviceDocument - object of {@link ServiceDocument}
-	 * @param hierarchy - object of {@link HierarchyObject}
+	 * @param hierarchy - object of {@link HierarchyObjectRestV6}
 	 * @param existedCollectionObjects - array of {@link CollectionObject}
 	 * 
 	 * @return a {@code List<String>} of communities (0 or more communities are
 	 *         possible) or {@code null} if a collection was not found
 	 */
 	protected List<String> getCommunitiesForCollection(String collectionURL, ServiceDocument serviceDocument,
-			HierarchyObject hierarchy, CollectionObject[] existedCollectionObjects) {
+			HierarchyObjectRestV6 hierarchy, CollectionObject[] existedCollectionObjects) {
 
 		requireNonNull(collectionURL);
 		requireNonNull(serviceDocument);
@@ -236,12 +235,12 @@ public class DSpace_v6 extends SwordExporter implements DSpaceRepository {
 	 * Get a complete hierarchy of collections as HierarchyObject. REST is used.
 	 * Works up DSpace-6.
 	 * 
-	 * @return {@link HierarchyObject}
+	 * @return {@link HierarchyObjectRestV6}
 	 */
-	protected HierarchyObject getHierarchyObject() {
+	protected HierarchyObjectRestV6 getHierarchyObjectRestV6() {
 
 		final CloseableHttpResponse response = WebUtils.getResponse(this.httpClient, this.hierarchyURL, RequestType.GET, APPLICATION_JSON, APPLICATION_JSON);
-		final HierarchyObject hierarchy = JsonUtils.jsonStringToObject(WebUtils.getResponseEntityAsString(response), HierarchyObject.class);
+		final HierarchyObjectRestV6 hierarchy = JsonUtils.jsonStringToObject(WebUtils.getResponseEntityAsString(response), HierarchyObjectRestV6.class);
 		WebUtils.closeResponse(response);
 		return hierarchy;
 	}
@@ -286,23 +285,25 @@ public class DSpace_v6 extends SwordExporter implements DSpaceRepository {
 		requireNonNull(serviceDocument);
 		requireNonNull(existedCollections);
 		
-		String swordCollectionPath = ""; // collectionURL without a hostname and port
-
-		for (SWORDWorkspace workspace : serviceDocument.getWorkspaces()) {
-			for (SWORDCollection collection : workspace.getCollections()) {
-				if (collection.getHref().toString().equals(collectionURL)) {
-					swordCollectionPath = collection.getHref().getPath();
+		String swordCollectionPath = null;
+		
+		// Find collectionURL inside the repository (via service document and SWORD protocol)
+		for(Map.Entry<String, String> entry: super.getCollections(serviceDocument).entrySet()) {
+			if(entry.getKey().equals(collectionURL)) {
+				swordCollectionPath=entry.getKey();
+			}
+		}
+		// If cllectionURL was found via service document, find the handle
+		if(swordCollectionPath != null) {
+			// Compare REST-handle and swordCollectionPath
+			for (CollectionObject collection : existedCollections) {
+				if (swordCollectionPath.contains(collection.handle)) {
+					return collection.handle;
 				}
 			}
 		}
-
-		// Compare REST-handle and swordCollectionPath
-		for (CollectionObject collection : existedCollections) {
-			if (swordCollectionPath.contains(collection.handle)) {
-				return collection.handle; //return collection handle
-			}
-		}
-		return null; // collectionURL was not found
+				
+		return null; //collectionURL was not found 
 	}
 
 	
@@ -323,7 +324,7 @@ public class DSpace_v6 extends SwordExporter implements DSpaceRepository {
 	
 	
 	/**
-	 * Export metadata only to some already existed entry (via edit-URL, @link {@link SwordRequestType}) or create a Private method which can use different request types. See
+	 * Export metadata only to some already existed entry (via edit-URL, {@link SwordRequestType}) or create a Private method which can use different request types. See
 	 * {@link SwordRequestType}.
 	 * 
 	 * @param url - collection URL (with "collection" substring inside) or item URL (with "edit" substring inside)
@@ -725,10 +726,21 @@ public class DSpace_v6 extends SwordExporter implements DSpaceRepository {
 	public List<String> getCommunitiesForCollection(String collectionURL) {
 
 		ServiceDocument serviceDocument = super.getServiceDocument(this.serviceDocumentURL);
-		HierarchyObject hierarchy = getHierarchyObject();
-		CollectionObject[] existedCollectionObjects = getAllCollectionObjects();
+		if(serviceDocument == null) {
+			return null;
+		}
 
-		return getCommunitiesForCollection(collectionURL, serviceDocument, hierarchy, existedCollectionObjects);
+		// Check, if "service" tag is provided for the collections - not default service document.
+		if(super.isServiceDocumentWithSubservices(serviceDocument)) {
+			// Get communities for collections via SWORD protocol only, with usage of HierarchyObject class
+			
+			return super.getHierarchy(serviceDocument).getServiceHierarchyForCollection(collectionURL);
+		} else {
+			// Service document has only collections (default service document). Combine REST and SWORD requests.
+			HierarchyObjectRestV6 hierarchy = getHierarchyObjectRestV6();
+			CollectionObject[] existedCollectionObjects = getAllCollectionObjects();
+			return getCommunitiesForCollection(collectionURL, serviceDocument, hierarchy, existedCollectionObjects);
+		}
 	}
 	
 	
@@ -742,10 +754,21 @@ public class DSpace_v6 extends SwordExporter implements DSpaceRepository {
 
 		// Get available collections from the ServiceDocument (SWORD)
 		ServiceDocument serviceDocument = super.getServiceDocument(this.serviceDocumentURL);
+		if(serviceDocument == null) {
+			return null;
+		}
+		
+		// Check, if "service" tag is provided for the collections - not default service document.
+		if(super.isServiceDocumentWithSubservices(serviceDocument)) {
+			// Get collections with full name via SWORD protocol only
+			return super.getCollectionsAsHierarchy(serviceDocument, fullNameSeparator);
+		}
+						
+		// Service document has only collections (default service document). Combine REST and SWORD requests.
 		Map<String, String> collectionsMap = super.getCollections(serviceDocument);
 		
 		// Get complete hierarchy of collections and array of CollectionOnject-s (REST) 
-		final HierarchyObject hierarchy = getHierarchyObject();
+		final HierarchyObjectRestV6 hierarchy = getHierarchyObjectRestV6();
 		final CollectionObject[] existedCollectionObjects = getAllCollectionObjects();
 
 		// Extend collection name with communities and separators
@@ -765,6 +788,34 @@ public class DSpace_v6 extends SwordExporter implements DSpaceRepository {
 		return collectionsMap;
 	}
 		
+	
+	/*
+	 * --------------------------------------------------
+	 * 
+	 * DSpaceRepositorySwordOnly interface implementation
+	 * 
+	 * --------------------------------------------------
+	 */
+	
+
+	@Override
+	public Map<String, String> getAvailableCollectionsWithFullNameSwordOnly(String fullNameSeparator){
+		
+		// Get service document.
+		ServiceDocument serviceDocument = super.getServiceDocument(this.serviceDocumentURL);
+		if(serviceDocument == null){
+			return null;
+		}
+		// Check, if "service" tag is provided for the collections - not default service document. If not - error.
+		if(!super.isServiceDocumentWithSubservices(serviceDocument)) {
+			return null;
+		}
+				
+		// Get collections with full name via SWORD protocol only
+		return super.getCollectionsAsHierarchy(serviceDocument, fullNameSeparator);
+		
+	}
+	
 	
 	/*
 	 * -----------------------------------------
