@@ -314,9 +314,9 @@ public class DSpaceSwordOnly extends SwordExporter implements DSpaceRepository {
 	 * 2 - add metadata via PUT request.
 	 * 
 	 * @param collectionURL holds the collection URL where items will be exported to, usually has "collection" substring inside
+	 * @param metadataFileXml holds the metadata which is necessary for the ingest
 	 * @param file holds a file which can contain one or multiple files
 	 * @param unpackZip decides whether to unpack the zipfile or places the packed zip file as uploaded data
-	 * @param metadataFileXml holds the metadata which is necessary for the ingest
 	 * @param inProgress {@code boolean} value for the "In-Progress" header 
 	 * 		  <p>
 	 * 	      For DSpace "In-Progress: true" means, that export will be done at first to the user's workspace, 
@@ -338,7 +338,7 @@ public class DSpaceSwordOnly extends SwordExporter implements DSpaceRepository {
 	 * @throws IOException in case of IO error
 	 * @throws SWORDClientException in case of SWORD error
 	 */
-	public String createEntryWithMetadataAndFile(String collectionURL, File file, boolean unpackZip, File metadataFileXml, boolean inProgress)
+	public String createEntryWithMetadataAndFile(String collectionURL, File metadataFileXml, File file, boolean unpackZip, boolean inProgress)
 			throws IOException, SWORDClientException {
 		
 		requireNonNull(collectionURL);
@@ -460,7 +460,7 @@ public class DSpaceSwordOnly extends SwordExporter implements DSpaceRepository {
 	 * 2 - add metadata via PUT request.
 	 */
 	@Override
-	public String createEntryWithMetadataAndFile(String collectionURL, File file, boolean unpackZip, Map<String, List<String>> metadataMap, boolean inProgress)
+	public String createEntryWithMetadataAndFile(String collectionURL, Map<String, List<String>> metadataMap, File file, boolean unpackZip, boolean inProgress)
 			throws IOException, SWORDClientException {
 		
 		requireNonNull(collectionURL);
@@ -652,11 +652,11 @@ public class DSpaceSwordOnly extends SwordExporter implements DSpaceRepository {
 	 * 		        New entry will be placed in the user's workspace for further editing before the final publication. 
 	 */
 	@Override
-	public String exportNewEntryWithFileAndMetadata(String collectionURL, File file, boolean unpackFileIfArchive,
-			Map<String, List<String>> metadataMap) throws IOException {
+	public String exportNewEntryWithMetadataAndFile(String collectionURL, Map<String, List<String>> metadataMap, 
+			File file, boolean unpackFileIfArchive) throws IOException {
 		
 		try {
-			return this.createEntryWithMetadataAndFile(collectionURL, file, unpackFileIfArchive, metadataMap, true); // "In-Progress: true" is used implicitly
+			return this.createEntryWithMetadataAndFile(collectionURL, metadataMap, file, unpackFileIfArchive, true); // "In-Progress: true" is used implicitly
 		} catch (SWORDClientException e) {
 			log.error("Exception by creation of new entry with file and metadata as Map.", e);
 			return null;
