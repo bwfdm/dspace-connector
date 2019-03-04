@@ -137,10 +137,10 @@ public class DSpaceTest_v6 {
 						}
 						
 					}
-					
-					
-					// DSpaceSworOnly
+										
+					// Test: DSpaceSworOnly
 					//
+					System.out.println("\n\n ============== Test: DSpaceSwordOnly ==================\n\n");
 					// Test: ExportRepository methods
 				    testExportRepository((ExportRepository)dspaceSwordOnly, publicationCollectionUrl); 
 				    // Test: DSpaceRepository methods
@@ -149,19 +149,16 @@ public class DSpaceTest_v6 {
 				    testDSpaceSwordOnly(dspaceSwordOnly, publicationCollectionUrl);
 					
 					
-//				    // DSpace_v6
-//				    //
-//					// Test: ExportRepository methods
-//				    testExportRepository((ExportRepository)dspace_v6, publicationCollectionUrl);
-//				    // Test: DSpaceRepository methods
-//				    testDSpaceRepository((DSpaceRepository)dspace_v6, publicationCollectionUrl);			    
-//				    // Test: DSpace_v6 methods
-//				    testDSpace_v6(dspace_v6, publicationCollectionUrl);
-				    
-				    
-				    
-				    
-				    
+				    // Test: DSpace_v6
+				    //
+				    System.out.println("\n\n ============== Test: DSpace_v6 ==================\n\n");
+					// Test: ExportRepository methods
+				    testExportRepository((ExportRepository)dspace_v6, publicationCollectionUrl);
+				    // Test: DSpaceRepository methods
+				    testDSpaceRepository((DSpaceRepository)dspace_v6, publicationCollectionUrl);			    
+				    // Test: DSpace_v6 methods
+				    testDSpace_v6(dspace_v6, publicationCollectionUrl);				    
+
 				}
 			}
 		
@@ -335,7 +332,11 @@ public class DSpaceTest_v6 {
 		
 		// Is REST accessible
 		output += "Is REST accessible: " + dspace_v6.isRestAccessible() + "\n";
-				
+		
+		// Check if service document supports "service" tag inside the collections
+		output += "Is ServiceDocument with subservices: " 
+				+ dspace_v6.isServiceDocumentWithSubservices(dspace_v6.getServiceDocument(dspace_v6.getServiceDocumentURL())) + "\n";
+		
 		// Get collection handle
 		output += "Collection: " + exportCollectionUrl + " -> handle: " + dspace_v6.getCollectionHandle(exportCollectionUrl) + "\n";
 				

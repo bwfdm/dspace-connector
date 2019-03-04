@@ -10,8 +10,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.swordapp.client.Content;
@@ -26,15 +24,14 @@ import org.swordapp.client.UriRegistry;
 import bwfdm.connector.dspace.utils.IOUtils;
 import bwfdm.exporter.commons.SwordExporter;
 
-public class DSpaceSwordOnly extends SwordExporter implements DSpaceRepository, DSpaceRepositorySwordOnly {
+public class DSpaceSwordOnly extends SwordExporter implements DSpaceRepository {
 
-	protected static final Logger log = LoggerFactory.getLogger(DSpaceSwordOnly.class);
+	private static final Logger log = LoggerFactory.getLogger(DSpaceSwordOnly.class);
 
 	// For SWORD
-	private String serviceDocumentURL;
+	protected String serviceDocumentURL;
 
-	CloseableHttpClient httpClient;
-
+	
 	/**
 	 * Create DSpaceSwordOnly object, with activated "on-behalf-of" option, what allows to make a submission only 
 	 * with credentials of some privileged account (adminUser, adminPassword) on behalf of other account (standardUser),
@@ -66,14 +63,6 @@ public class DSpaceSwordOnly extends SwordExporter implements DSpaceRepository, 
 		requireNonNull(adminPassword);
 		
 		this.setServiceDocumentURL(serviceDocumentURL);
-		
-		// Traditional way to create client. SSL certificate must be actual in this case.
-		// In case of some problems with the certificate (possible exceptions "input is not a X.509 certificate"), 
-		// read here -> https://stackoverflow.com/questions/4325263/how-to-import-a-cer-certificate-into-a-java-keystore
-		this.httpClient = HttpClientBuilder.create().build();
-		
-		// In case of problems with SSL - httpClient which ignores the SSL certificate
-		//this.httpClient = WebUtils.createHttpClientIgnoringSSL();
 	}
 	
 	
@@ -104,14 +93,6 @@ public class DSpaceSwordOnly extends SwordExporter implements DSpaceRepository, 
 		requireNonNull(userPassword);
 		
 		this.setServiceDocumentURL(serviceDocumentURL);
-
-		// Traditional way to create client. SSL certificate must be actual in this case.
-		// In case of some problems with the certificate (possible exceptions "input is not a X.509 certificate"), 
-		// read here -> https://stackoverflow.com/questions/4325263/how-to-import-a-cer-certificate-into-a-java-keystore
-		this.httpClient = HttpClientBuilder.create().build();
-		
-		// In case of problems with SSL - httpClient which ignores the SSL certificate
-		//this.httpClient = WebUtils.createHttpClientIgnoringSSL();
 	}
 	
 
@@ -574,21 +555,6 @@ public class DSpaceSwordOnly extends SwordExporter implements DSpaceRepository, 
 		}
 	}
 		
-	
-	/*
-	 * --------------------------------------------------
-	 * 
-	 * DSpaceRepositorySwordOnly interface implementation
-	 * 
-	 * --------------------------------------------------
-	 */
-	
-
-	@Override
-	public Map<String, String> getAvailableCollectionsWithFullNameSwordOnly(String fullNameSeparator){
-		return getAvailableCollectionsWithFullName(fullNameSeparator);		
-	}
-	
 	
 	/*
 	 * -----------------------------------------
