@@ -44,27 +44,30 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import bwfdm.connector.dspace.DSpaceRepository;
+import bwfdm.connector.dspace.DSpaceSwordOnly;
 import bwfdm.connector.dspace.DSpace_v6;
 import bwfdm.exporter.commons.ExportRepository;
+import bwfdm.exporter.commons.SwordExporter;
 
 /**
  * Class for manual testing of DSpace_v6 methods
  * 
  * @author Volodymyr Kushnarenko
  */
-public class DSpaceTest_v6 {
+public class DSpaceTest {
 	
-	protected static final Logger log = LoggerFactory.getLogger(DSpaceTest_v6.class);
+	protected static final Logger log = LoggerFactory.getLogger(DSpaceTest.class);
 	
 	// Files for export
-	private static File zipPackageFilesOnly = new File(DSpaceTest_v6.class.getClassLoader().getResource("testfiles/package_files_only.zip").getFile());
-	private static File zipPackageFilesWithMetadata = new File(DSpaceTest_v6.class.getClassLoader().getResource("testfiles/package_files_with_metadata.zip").getFile());
-	private static File zipPackageFilesMetadataOnly = new File(DSpaceTest_v6.class.getClassLoader().getResource("testfiles/package_metadata_only.zip").getFile());
-	private static File zipPackageWithSubfolder = new File(DSpaceTest_v6.class.getClassLoader().getResource("testfiles/package_with_subfolder.zip").getFile());
-	private static File xmlMetadataFile = new File(DSpaceTest_v6.class.getClassLoader().getResource("testfiles/entry.xml").getFile());
-	private static File txtFile = new File(DSpaceTest_v6.class.getClassLoader().getResource("testfiles/test-file.txt").getFile());
-	private static File otherFile = new File(DSpaceTest_v6.class.getClassLoader().getResource("testfiles/test-file.with.dots.txt.t").getFile());
+	private static File zipPackageFilesOnly = new File(DSpaceTest.class.getClassLoader().getResource("testfiles/package_files_only.zip").getFile());
+	private static File zipPackageFilesWithMetadata = new File(DSpaceTest.class.getClassLoader().getResource("testfiles/package_files_with_metadata.zip").getFile());
+	private static File zipPackageFilesMetadataOnly = new File(DSpaceTest.class.getClassLoader().getResource("testfiles/package_metadata_only.zip").getFile());
+	private static File zipPackageWithSubfolder = new File(DSpaceTest.class.getClassLoader().getResource("testfiles/package_with_subfolder.zip").getFile());
+	private static File xmlMetadataFile = new File(DSpaceTest.class.getClassLoader().getResource("testfiles/entry.xml").getFile());
+	private static File txtFile = new File(DSpaceTest.class.getClassLoader().getResource("testfiles/test-file.txt").getFile());
+	private static File otherFile = new File(DSpaceTest.class.getClassLoader().getResource("testfiles/test-file.with.dots.txt.t").getFile());
 	
+	private static boolean inProgress = true;
 	
 	public static void main(String[] args) {
 		
@@ -72,8 +75,8 @@ public class DSpaceTest_v6 {
 		
 		try {
 			
-			File fXML = new File(DSpaceTest_v6.class.getClassLoader().getResource("repositories.xml").getFile());
-			File fXSD = new File(DSpaceTest_v6.class.getClassLoader().getResource("repositories_schema.xsd").getFile());
+			File fXML = new File(DSpaceTest.class.getClassLoader().getResource("repositories.xml").getFile());
+			File fXSD = new File(DSpaceTest.class.getClassLoader().getResource("repositories_schema.xsd").getFile());
 			
 			// Validate xml schema
 			if(!validateXMLSchema(fXSD, fXML)) {
@@ -111,6 +114,7 @@ public class DSpaceTest_v6 {
 					System.out.println("[normalUser] -- " + normalUser);
 										
 					// Main test method
+					DSpaceSwordOnly dspaceSwordOnly = null;
 					DSpace_v6 dspace_v6 = null;
 					if(serviceDocumentUrl.equals("") || restUrl.equals("") || publicationCollectionUrl.equals("")) {
 						log.error("Error: not defined serviceDocumentUrl or metadataReplacementEntryUrl. Please check the repositories.xml file.");
@@ -120,28 +124,54 @@ public class DSpaceTest_v6 {
 							System.out.println("\nPassword for \"" + adminUser + "\" [admin]:");
 							System.out.println("--> ATTENTION: typo is NOT hidden!");
 							char[] adminPassword = scanner.nextLine().toCharArray();
-							dspace_v6 = new DSpace_v6(serviceDocumentUrl, restUrl, adminUser, normalUser, adminPassword);
+							
+							// Check if "service" tag is supported in service document
+							if(SwordExporter.isServiceDocumentWithSubservices(serviceDocumentUrl, SwordExporter.createAuthCredentials(adminUser, adminPassword, normalUser))) {
+								// Create DSpaceSwordOnly object
+								dspaceSwordOnly = new DSpaceSwordOnly(serviceDocumentUrl, adminUser, normalUser, adminPassword);
+							} else {
+								// Create DSpace_v6 pbject
+								dspace_v6 = new DSpace_v6(serviceDocumentUrl, restUrl, adminUser, normalUser, adminPassword);
+							}
 						} else {
 							if (!normalUser.equals("")) {
 								// Enter user password
 								System.out.println("\nPassword for \"" + normalUser + "\" [normal user]:");
 								System.out.println("--> ATTENTION: typo is NOT hidden!");
 								char[] userPassword = scanner.nextLine().toCharArray();
-								dspace_v6 = new DSpace_v6(serviceDocumentUrl, restUrl, normalUser, userPassword);
+								
+								// Check if "service" tag is supported in service document
+								if(SwordExporter.isServiceDocumentWithSubservices(serviceDocumentUrl, SwordExporter.createAuthCredentials(normalUser, userPassword))) {
+									// Create DSpaceSwordOnly object
+									dspaceSwordOnly = new DSpaceSwordOnly(serviceDocumentUrl, normalUser, userPassword);
+								} else {
+									// Create DSpace_v6 pbject
+									dspace_v6 = new DSpace_v6(serviceDocumentUrl, restUrl, normalUser, userPassword);
+								}
 							}
 						}
-						
 					}
 					
-					// Test: ExportRepository methods
-				    testExportRepository((ExportRepository)dspace_v6, publicationCollectionUrl);
-				    
-				    // Test: DSpaceRepository methods
-				    testDSpaceRepository((DSpaceRepository)dspace_v6, publicationCollectionUrl);
-				    				    
-				    // Test: DSpace_v6 methods
-				    testDSpace_v6(dspace_v6, publicationCollectionUrl);
-				    
+					
+					if(dspaceSwordOnly != null) {
+						System.out.println("\n\n ============== Test: DSpaceSwordOnly ==================\n\n");
+						// Test: ExportRepository methods
+					    testExportRepository((ExportRepository)dspaceSwordOnly, publicationCollectionUrl); 
+					    // Test: DSpaceRepository methods
+					    testDSpaceRepository((DSpaceRepository)dspaceSwordOnly, publicationCollectionUrl);
+					    // Test: DSpaceSwordOnly methods
+					    testDSpaceSwordOnly(dspaceSwordOnly, publicationCollectionUrl);
+					}					
+					
+					if(dspace_v6 != null) {
+					    System.out.println("\n\n ============== Test: DSpace_v6 ==================\n\n");
+						// Test: ExportRepository methods
+					    testExportRepository((ExportRepository)dspace_v6, publicationCollectionUrl);
+					    // Test: DSpaceRepository methods
+					    testDSpaceRepository((DSpaceRepository)dspace_v6, publicationCollectionUrl);			    
+					    // Test: DSpace_v6 methods
+					    testDSpace_v6(dspace_v6, publicationCollectionUrl);				    
+					}
 				}
 			}
 		
@@ -208,38 +238,38 @@ public class DSpaceTest_v6 {
 			
 			// ZIP-package with files only (no extra xml-file)
 			metadataMap.put("title", Arrays.asList("ExportRepository test, export map-metadata and file: " + zipPackageFilesOnly.getName()));
-			output += repository.exportNewEntryWithFileAndMetadata(exportCollectionUrl, zipPackageFilesOnly, false, metadataMap) + "\n";
-			output += repository.exportNewEntryWithFileAndMetadata(exportCollectionUrl, zipPackageFilesOnly, true, metadataMap) + "\n";
+			output += repository.exportNewEntryWithMetadataAndFile(exportCollectionUrl, metadataMap, zipPackageFilesOnly, false) + "\n";
+			output += repository.exportNewEntryWithMetadataAndFile(exportCollectionUrl, metadataMap, zipPackageFilesOnly, true) + "\n";
 			
 			// ZIP-package with files and extra xml-file
 			metadataMap.put("title", Arrays.asList("ExportRepository test, export map-metadata and file: " + zipPackageFilesWithMetadata.getName()));
-			output += repository.exportNewEntryWithFileAndMetadata(exportCollectionUrl, zipPackageFilesWithMetadata, false, metadataMap) + "\n";
-			output += repository.exportNewEntryWithFileAndMetadata(exportCollectionUrl, zipPackageFilesWithMetadata, true, metadataMap) + "\n";
+			output += repository.exportNewEntryWithMetadataAndFile(exportCollectionUrl, metadataMap, zipPackageFilesWithMetadata, false) + "\n";
+			output += repository.exportNewEntryWithMetadataAndFile(exportCollectionUrl, metadataMap, zipPackageFilesWithMetadata, true) + "\n";
 			
 			// ZIP-package with metadata only
 			metadataMap.put("title", Arrays.asList("ExportRepository test, export map-metadata and file: " + zipPackageFilesMetadataOnly.getName()));
-			output += repository.exportNewEntryWithFileAndMetadata(exportCollectionUrl, zipPackageFilesMetadataOnly, false, metadataMap) + "\n";
-			output += repository.exportNewEntryWithFileAndMetadata(exportCollectionUrl, zipPackageFilesMetadataOnly, true, metadataMap) + "\n";
+			output += repository.exportNewEntryWithMetadataAndFile(exportCollectionUrl, metadataMap, zipPackageFilesMetadataOnly, false) + "\n";
+			output += repository.exportNewEntryWithMetadataAndFile(exportCollectionUrl, metadataMap, zipPackageFilesMetadataOnly, true) + "\n";
 						
 			// ZIP-package with subfolder
 			metadataMap.put("title", Arrays.asList("ExportRepository test, export map-metadata and file: " + zipPackageWithSubfolder.getName()));
-			output += repository.exportNewEntryWithFileAndMetadata(exportCollectionUrl, zipPackageWithSubfolder, false, metadataMap) + "\n";
-			output += repository.exportNewEntryWithFileAndMetadata(exportCollectionUrl, zipPackageWithSubfolder, true, metadataMap) + "\n";
+			output += repository.exportNewEntryWithMetadataAndFile(exportCollectionUrl, metadataMap, zipPackageWithSubfolder, false) + "\n";
+			output += repository.exportNewEntryWithMetadataAndFile(exportCollectionUrl, metadataMap, zipPackageWithSubfolder, true) + "\n";
 			
 			// TXT-file
 			metadataMap.put("title", Arrays.asList("ExportRepository test, export map-metadata and file: " + txtFile.getName()));
-			output += repository.exportNewEntryWithFileAndMetadata(exportCollectionUrl, txtFile, false, metadataMap) + "\n";
-			output += repository.exportNewEntryWithFileAndMetadata(exportCollectionUrl, txtFile, true, metadataMap) + "\n";
+			output += repository.exportNewEntryWithMetadataAndFile(exportCollectionUrl, metadataMap, txtFile, false) + "\n";
+			output += repository.exportNewEntryWithMetadataAndFile(exportCollectionUrl, metadataMap, txtFile, true) + "\n";
 			
 			// XML-file (will be exported as a normal file, metadata will not be extracted)
 			metadataMap.put("title", Arrays.asList("ExportRepository test, export map-metadata and file: " + xmlMetadataFile.getName()));
-			output += repository.exportNewEntryWithFileAndMetadata(exportCollectionUrl, xmlMetadataFile, false, metadataMap) + "\n";
-			output += repository.exportNewEntryWithFileAndMetadata(exportCollectionUrl, xmlMetadataFile, true, metadataMap) + "\n";
+			output += repository.exportNewEntryWithMetadataAndFile(exportCollectionUrl, metadataMap, xmlMetadataFile, false) + "\n";
+			output += repository.exportNewEntryWithMetadataAndFile(exportCollectionUrl, metadataMap, xmlMetadataFile, true) + "\n";
 			
 			// Other-format-file
 			metadataMap.put("title", Arrays.asList("ExportRepository test, export map-metadata and file: " + otherFile.getName()));
-			output += repository.exportNewEntryWithFileAndMetadata(exportCollectionUrl, otherFile, false, metadataMap) + "\n";
-			output += repository.exportNewEntryWithFileAndMetadata(exportCollectionUrl, otherFile, true, metadataMap) + "\n";
+			output += repository.exportNewEntryWithMetadataAndFile(exportCollectionUrl, metadataMap, otherFile, false) + "\n";
+			output += repository.exportNewEntryWithMetadataAndFile(exportCollectionUrl, metadataMap, otherFile, true) + "\n";
 			
 		} catch (IOException e) {
 			output += "ERROR! Exception during export: " + e.getMessage() + "\n";
@@ -291,7 +321,7 @@ public class DSpaceTest_v6 {
 		List<String> communities = dspaceRepository.getCommunitiesForCollection(exportCollectionUrl);
 		if(communities != null) {
 			for(String community: communities) {
-				output += "-- URL: " + community;
+				output += "-- Community: " + community + "\n";
 			}
 		} else {
 			output += "Error by getting communities for collection! \n";
@@ -315,7 +345,11 @@ public class DSpaceTest_v6 {
 		
 		// Is REST accessible
 		output += "Is REST accessible: " + dspace_v6.isRestAccessible() + "\n";
-				
+		
+		// Check if service document supports "service" tag inside the collections
+		output += "Is ServiceDocument with subservices: " 
+				+ dspace_v6.isServiceDocumentWithSubservices(dspace_v6.getServiceDocument(dspace_v6.getServiceDocumentURL())) + "\n";
+		
 		// Get collection handle
 		output += "Collection: " + exportCollectionUrl + " -> handle: " + dspace_v6.getCollectionHandle(exportCollectionUrl) + "\n";
 				
@@ -358,7 +392,7 @@ public class DSpaceTest_v6 {
 		output += "\n" + "== Create entry with map-metadata ==\n";
 		metadataMap.put("title", Arrays.asList("DSpace_v6 test, create entry with map-metadata"));
 		try {
-			output += dspace_v6.createEntryWithMetadata(exportCollectionUrl, metadataMap) + "\n";
+			output += dspace_v6.createEntryWithMetadata(exportCollectionUrl, metadataMap, inProgress) + "\n";
 		} catch (SWORDClientException e) {
 			output += "ERROR! Exception during creation of entry with map-metadata: " + e.getMessage() + "\n";
 		}
@@ -370,17 +404,30 @@ public class DSpaceTest_v6 {
 			
 			// ZIP-package with files only (no extra xml-file)
 			metadataMap.put("title", Arrays.asList("DSpace_v6 test, create entry with map-metadata and file: " + zipPackageFilesOnly.getName()));
-			output += dspace_v6.createEntryWithMetadataAndFile(exportCollectionUrl, zipPackageFilesOnly, false, metadataMap) + "\n";
-			output += dspace_v6.createEntryWithMetadataAndFile(exportCollectionUrl, zipPackageFilesOnly, true, metadataMap) + "\n";
+			output += dspace_v6.createEntryWithMetadataAndFile(exportCollectionUrl, metadataMap, zipPackageFilesOnly, false, inProgress) + "\n";
+			output += dspace_v6.createEntryWithMetadataAndFile(exportCollectionUrl, metadataMap, zipPackageFilesOnly, true, inProgress) + "\n";
 			
 			// ZIP-package with files and extra xml-file
 			metadataMap.put("title", Arrays.asList("DSpace_v6 test, create entry with map-metadata and file: " + zipPackageFilesWithMetadata.getName()));
-			output += dspace_v6.createEntryWithMetadataAndFile(exportCollectionUrl, zipPackageFilesWithMetadata, false, metadataMap) + "\n";
-			output += dspace_v6.createEntryWithMetadataAndFile(exportCollectionUrl, zipPackageFilesWithMetadata, true, metadataMap) + "\n";		
+			output += dspace_v6.createEntryWithMetadataAndFile(exportCollectionUrl, metadataMap, zipPackageFilesWithMetadata, false, inProgress) + "\n";
+			output += dspace_v6.createEntryWithMetadataAndFile(exportCollectionUrl, metadataMap, zipPackageFilesWithMetadata, true, inProgress) + "\n";		
 		
 		} catch (IOException | SWORDClientException e) {
 			output += "ERROR! Exception during entry creation: " + e.getMessage() + "\n";
 		}
+		
+		
+//		// Create entry with map-metadata and file with "In-Progress: false"
+//		try {
+//			output += "\n" + "== Create entry with metadata and file with \"In-Progress: false\" ==\n";
+//			
+//			// ZIP-package with files and extra xml-file
+//			metadataMap.put("title", Arrays.asList("DSpace_v6 test, create entry with map-metadata and file: " + zipPackageFilesWithMetadata.getName() + ", In-Progress: false"));
+//			output += dspace_v6.createEntryWithMetadataAndFile(exportCollectionUrl, zipPackageFilesWithMetadata, true, metadataMap, false) + "\n"; // "In-Progress: false" explicitly		
+//		
+//		} catch (IOException | SWORDClientException e) {
+//			output += "ERROR! Exception during entry creation with \"In-Progress: false\": " + e.getMessage() + "\n";
+//		}		
 		
 		
 		// Export new entry with file
@@ -394,6 +441,122 @@ public class DSpaceTest_v6 {
 			// ZIP-package with files and extra xml-file
 			output += dspace_v6.exportNewEntryWithFile(exportCollectionUrl, zipPackageFilesWithMetadata, false) + "\n";
 			output += dspace_v6.exportNewEntryWithFile(exportCollectionUrl, zipPackageFilesWithMetadata, true) + "\n";
+						
+		} catch (IOException e) {
+			output += "ERROR! Exception during entry creation: " + e.getMessage() + "\n";
+		}
+				
+		
+		// Print output
+		System.out.println(output);
+	}
+	
+	
+	/**
+	 * Testing of DSpace_v6 methods
+	 * 
+	 * @param dspaceRepository {@link DSpaceRepository} object
+	 * @param exportCollectionUrl {@link String} with the collection URL, where to export (publish)
+	 * 
+	 */
+	private static void testDSpaceSwordOnly(DSpaceSwordOnly dspaceSwordOnly, String exportCollectionUrl) {
+	
+		String output = "\n\n**** Currently testing: DSpaceSwordOnly methods ****\n\n";
+		
+		// Check if service document supports "service" tag inside the collections
+		output += "isServiceDocumentWithSubservices: " 
+				+ dspaceSwordOnly.isServiceDocumentWithSubservices(dspaceSwordOnly.getServiceDocument(dspaceSwordOnly.getServiceDocumentURL())) + "\n";
+		
+		// Get collection handle
+		output += "Collection: " + exportCollectionUrl + "\n";
+				
+				
+		// Test for collections with full name and handle
+		output += "== User available collections with full name and handle: \n";
+		Map<String, String> collectionsWithFullName = dspaceSwordOnly.getAvailableCollectionsWithFullName("//");
+		if(collectionsWithFullName != null) {
+			for(Map.Entry<String, String> collection: collectionsWithFullName.entrySet()) {
+				output += collection.getValue() + "\n";
+				output += "-- URL:  " + collection.getKey() + "\n";
+			}			
+		} else {
+			output += "Error by getting collections with full name! \n";
+		}
+		
+		
+		// Test for collection entries
+		output += "== Get collection entries. Collection: " + exportCollectionUrl + "\n";
+		Map<String, String> entryMap = dspaceSwordOnly.getCollectionEntries(exportCollectionUrl);
+		if(entryMap != null) {
+			for(Map.Entry<String, String> entry: entryMap.entrySet()){
+				output += entry.getValue() + " -> URL: " + entry.getKey() + "\n";
+			}
+		} else {
+			output += "Error by getting collection entries! \n";
+		}
+		
+		
+		// Metadata
+		Map<String, List<String>> metadataMap = new HashMap<String, List<String>>();
+		metadataMap.put("not-real-field", Arrays.asList("DSpaceSwordOnly test: unreal-name")); 	//will not be accepted
+		metadataMap.put("publisher", Arrays.asList("DSpaceSwordOnly test: some publisher")); 		//OK, accepted
+		metadataMap.put("author", Arrays.asList("author-1")); 								//will not be accepted
+		metadataMap.put("creator", Arrays.asList("creator-1", "creator-2", "creator-3")); 	//OK 
+		
+		
+		// Create entry with map-metadata only
+		output += "\n" + "== Create entry with map-metadata ==\n";
+		metadataMap.put("title", Arrays.asList("DSpace_v6 test, create entry with map-metadata"));
+		try {
+			output += dspaceSwordOnly.createEntryWithMetadata(exportCollectionUrl, metadataMap, inProgress) + "\n";
+		} catch (SWORDClientException e) {
+			output += "ERROR! Exception during creation of entry with map-metadata: " + e.getMessage() + "\n";
+		}
+		
+		
+		// Create entry with map-metadata and file
+		try {
+			output += "\n" + "== Create entry with metadata and file ==\n";
+			
+			// ZIP-package with files only (no extra xml-file)
+			metadataMap.put("title", Arrays.asList("DSpaceSwordOnly test, create entry with map-metadata and file: " + zipPackageFilesOnly.getName()));
+			output += dspaceSwordOnly.createEntryWithMetadataAndFile(exportCollectionUrl, metadataMap, zipPackageFilesOnly, false, inProgress) + "\n";
+			output += dspaceSwordOnly.createEntryWithMetadataAndFile(exportCollectionUrl, metadataMap, zipPackageFilesOnly, true, inProgress) + "\n";
+			
+			// ZIP-package with files and extra xml-file
+			metadataMap.put("title", Arrays.asList("DSpaceSwordOnly test, create entry with map-metadata and file: " + zipPackageFilesWithMetadata.getName()));
+			output += dspaceSwordOnly.createEntryWithMetadataAndFile(exportCollectionUrl, metadataMap, zipPackageFilesWithMetadata, false, inProgress) + "\n";
+			output += dspaceSwordOnly.createEntryWithMetadataAndFile(exportCollectionUrl, metadataMap, zipPackageFilesWithMetadata, true, inProgress) + "\n";		
+		
+		} catch (IOException | SWORDClientException e) {
+			output += "ERROR! Exception during entry creation: " + e.getMessage() + "\n";
+		}
+		
+		
+//		// Create entry with map-metadata and file with "In-Progress: false"
+//		try {
+//			output += "\n" + "== Create entry with metadata and file with \"In-Progress: false\" ==\n";
+//			
+//			// ZIP-package with files and extra xml-file
+//			metadataMap.put("title", Arrays.asList("DSpaceSwordOnly test, create entry with map-metadata and file: " + zipPackageFilesWithMetadata.getName() + ", In-Progress: false"));
+//			output += dspaceSwordOnly.createEntryWithMetadataAndFile(exportCollectionUrl, zipPackageFilesWithMetadata, true, metadataMap, false) + "\n"; // "In-Progress: false" explicitly		
+//		
+//		} catch (IOException | SWORDClientException e) {
+//			output += "ERROR! Exception during entry creation with \"In-Progress: false\": " + e.getMessage() + "\n";
+//		}		
+		
+		
+		// Export new entry with file
+		try {
+			output += "\n" + "== Export new entry with file ==\n";
+			
+			// ZIP-package with files only (no extra xml-file)
+			output += dspaceSwordOnly.exportNewEntryWithFile(exportCollectionUrl, zipPackageFilesOnly, false) + "\n";
+			output += dspaceSwordOnly.exportNewEntryWithFile(exportCollectionUrl, zipPackageFilesOnly, true) + "\n";
+			
+			// ZIP-package with files and extra xml-file
+			output += dspaceSwordOnly.exportNewEntryWithFile(exportCollectionUrl, zipPackageFilesWithMetadata, false) + "\n";
+			output += dspaceSwordOnly.exportNewEntryWithFile(exportCollectionUrl, zipPackageFilesWithMetadata, true) + "\n";
 						
 		} catch (IOException e) {
 			output += "ERROR! Exception during entry creation: " + e.getMessage() + "\n";

@@ -55,7 +55,7 @@ public class WebUtils {
 	 * 
 	 * @return {@link CloseableHttpClient} or {@code null} in case of error
 	 */
-	public static CloseableHttpClient createHttpClientWithSSLSupport() {
+	public static CloseableHttpClient createHttpClientIgnoringSSL() {
 
 		try {
 			KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());

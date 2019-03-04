@@ -22,7 +22,7 @@ package bwfdm.connector.dspace.dto.v6;
  * 
  * @author Volodymyr Kushnarenko
  */
-public class HierarchyCollectionObject {
+public class HierarchyCollectionObjectRestV6 {
 
 	public String id;
 	public String name;
