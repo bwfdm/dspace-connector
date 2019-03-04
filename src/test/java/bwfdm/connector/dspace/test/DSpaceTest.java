@@ -54,18 +54,18 @@ import bwfdm.exporter.commons.SwordExporter;
  * 
  * @author Volodymyr Kushnarenko
  */
-public class DSpaceTest_v6 {
+public class DSpaceTest {
 	
-	protected static final Logger log = LoggerFactory.getLogger(DSpaceTest_v6.class);
+	protected static final Logger log = LoggerFactory.getLogger(DSpaceTest.class);
 	
 	// Files for export
-	private static File zipPackageFilesOnly = new File(DSpaceTest_v6.class.getClassLoader().getResource("testfiles/package_files_only.zip").getFile());
-	private static File zipPackageFilesWithMetadata = new File(DSpaceTest_v6.class.getClassLoader().getResource("testfiles/package_files_with_metadata.zip").getFile());
-	private static File zipPackageFilesMetadataOnly = new File(DSpaceTest_v6.class.getClassLoader().getResource("testfiles/package_metadata_only.zip").getFile());
-	private static File zipPackageWithSubfolder = new File(DSpaceTest_v6.class.getClassLoader().getResource("testfiles/package_with_subfolder.zip").getFile());
-	private static File xmlMetadataFile = new File(DSpaceTest_v6.class.getClassLoader().getResource("testfiles/entry.xml").getFile());
-	private static File txtFile = new File(DSpaceTest_v6.class.getClassLoader().getResource("testfiles/test-file.txt").getFile());
-	private static File otherFile = new File(DSpaceTest_v6.class.getClassLoader().getResource("testfiles/test-file.with.dots.txt.t").getFile());
+	private static File zipPackageFilesOnly = new File(DSpaceTest.class.getClassLoader().getResource("testfiles/package_files_only.zip").getFile());
+	private static File zipPackageFilesWithMetadata = new File(DSpaceTest.class.getClassLoader().getResource("testfiles/package_files_with_metadata.zip").getFile());
+	private static File zipPackageFilesMetadataOnly = new File(DSpaceTest.class.getClassLoader().getResource("testfiles/package_metadata_only.zip").getFile());
+	private static File zipPackageWithSubfolder = new File(DSpaceTest.class.getClassLoader().getResource("testfiles/package_with_subfolder.zip").getFile());
+	private static File xmlMetadataFile = new File(DSpaceTest.class.getClassLoader().getResource("testfiles/entry.xml").getFile());
+	private static File txtFile = new File(DSpaceTest.class.getClassLoader().getResource("testfiles/test-file.txt").getFile());
+	private static File otherFile = new File(DSpaceTest.class.getClassLoader().getResource("testfiles/test-file.with.dots.txt.t").getFile());
 	
 	private static boolean inProgress = true;
 	
@@ -75,8 +75,8 @@ public class DSpaceTest_v6 {
 		
 		try {
 			
-			File fXML = new File(DSpaceTest_v6.class.getClassLoader().getResource("repositories.xml").getFile());
-			File fXSD = new File(DSpaceTest_v6.class.getClassLoader().getResource("repositories_schema.xsd").getFile());
+			File fXML = new File(DSpaceTest.class.getClassLoader().getResource("repositories.xml").getFile());
+			File fXSD = new File(DSpaceTest.class.getClassLoader().getResource("repositories_schema.xsd").getFile());
 			
 			// Validate xml schema
 			if(!validateXMLSchema(fXSD, fXML)) {
