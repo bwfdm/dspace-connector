@@ -25,7 +25,7 @@
 
 	<groupId>com.github.bwfdm</groupId>
 	<artifactId>dspace-connector</artifactId>
-	<version>0.3.0</version>
+	<version>0.4.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>DSpace Connector</name>
