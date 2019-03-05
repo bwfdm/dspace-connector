@@ -273,7 +273,7 @@ public class DSpaceSwordOnly extends SwordExporter implements DSpaceRepository {
 	 * 
 	 * @return {@link String} with the entry URL which includes "/swordv2/edit/" substring inside. 
 	 * 		This URL could be used without changes for further update of the metadata 
-	 * 		(see {@link #replaceMetadataEntry(String, Map) replaceMetadataEntry(entryURL, metadataMap)}) 
+	 * 		(see {@link #replaceMetadataEntry(String, Map, boolean) replaceMetadataEntry(entryURL, metadataMap, inProgress)}) 
 	 * 		<p>
 	 * 		<b>IMPORTANT for Dataverse repository:</b> for further update/extension of the media part 
 	 * 		(e.g. uploaded files inside the dataset) please replace "/swordv2/edit/" substring inside the entry URL to 
@@ -325,7 +325,7 @@ public class DSpaceSwordOnly extends SwordExporter implements DSpaceRepository {
 	 *
 	 * @return {@link String} with the entry URL which includes "/swordv2/edit/" substring inside. 
 	 * 		This URL could be used without changes for further update of the metadata 
-	 * 		(see {@link #replaceMetadataEntry(String, Map) replaceMetadataEntry(entryURL, metadataMap)}) 
+	 * 		(see {@link #replaceMetadataEntry(String, Map, boolean) replaceMetadataEntry(entryURL, metadataMap, inProgress)}) 
 	 * 		<p>
 	 * 		<b>IMPORTANT for Dataverse repository:</b> for further update/extension of the media part 
 	 * 		(e.g. uploaded files inside the dataset) please replace "/swordv2/edit/" substring inside the entry URL to 
