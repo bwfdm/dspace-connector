@@ -2,6 +2,21 @@ All notable changes to this project will be documented in this file.
 We follow the [Semantic Versioning 2.0.0](http://semver.org/) format.
 
 
+## 0.3.1 - 2019-04-08
+
+### Added
+- none
+
+### Deprecated
+- none
+
+### Removed
+- none
+
+### Fixed
+- Update version of "jackson-databind" dependency to "2.8.11.2" to solve a security issue:  
+  * see -> https://nvd.nist.gov/vuln/detail/CVE-2018-12022
+
 
 
 ## 0.3.0 - 2019-03-05

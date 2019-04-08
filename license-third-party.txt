@@ -7,12 +7,12 @@
 
 ##### com.github.swordapp:JavaClient, Copyright 2013 Cottage Labs (http://cottagelabs.com)  
 * https://github.com/swordapp/JavaClient2.0
-* Version: 2.0
+* Version: 0.9.3
 * License: Apache 2.0 http://www.apache.org/licenses/LICENSE-2.0.txt
 
 ##### com.fasterxml.jackson.core:jackson-databind 
 * https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind/2.8.11.1
-* Version: 2.8.11.1
+* Version: 2.8.11.2
 * License: Apache 2.0 http://www.apache.org/licenses/LICENSE-2.0.txt
 
 ##### org.slf4j:slf4j-api, Copyright (c) 2004-2017 QOS.ch 
@@ -32,7 +32,7 @@
 
 ##### com.github.bwfdm:exporter-commons
 * https://mvnrepository.com/artifact/com.github.bwfdm/exporter-commons
-* Version: 0.1.0
+* Version: 0.4.0
 * License: MIT license https://opensource.org/licenses/mit-license.php
 
 
